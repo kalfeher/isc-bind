@@ -1,0 +1,12 @@
+---
+  BindConfigFile: /etc/named.conf
+  # options are bind-dev, bind (stable version), bind-esv (extended support)
+  BindRelease: "bind"
+  # Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
+  ListenV4: "" #"127.0.0.1;"
+  ListenV6: "" #"::1;"
+  ListenStatsV4: "" #"127.0.0.1;"
+  ListenStatsV6: "" #"::1;"
+  ListenrndcV4: "" #"127.0.0.1;"
+  ListenrndcV6: "" #"::1;"
+  TrustedACL: "" #addresses that will be added to the trusted access control list

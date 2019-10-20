@@ -1,0 +1,87 @@
+/* Very basic recursive config.
+*/
+
+/* Nothing is allowed to transfer. */
+acl "xfr" {
+	"none";
+};
+
+/* allowed to do most things, so keep this to management and troubleshooting hosts */
+acl "trusted" {
+	127.0.0.0/8;
+	::1/128;
+	{{ TrustedACL }}
+};
+acl "master-list" {
+	# A list to put master servers in
+	127.0.0.0/8;
+};
+# masters statement comes here. Be sure to understand the diff between masters acl and masters zone statement
+
+options {
+
+	directory "/var/named/data";
+	listen-on { 127.0.0.1; {{ ListenV4 }} };
+	listen-on-v6 { ::1; {{ ListenV6 }} };
+	allow-new-zones yes;
+	#dnssec-validation auto; // I think this is default now anyways
+	allow-query {
+		trusted;
+	};
+	allow-query-cache {
+		trusted;
+	};
+	//leaving allow-recursion statement out for now
+	allow-transfer {
+		trusted; // all other xfr will be per zone or view
+	};
+	/* allow-update {
+		trusted; //must be per zone
+	};*/
+	dnssec-enable yes;
+	dnssec-validation auto;
+	serial-update-method unixtime;
+	zone-statistics full;
+
+};
+
+logging {
+	channel default_debug {
+		file "named.run";
+		print-time yes;
+		severity dynamic;
+	};
+	channel default_log {
+		file "/var/log/named/named.log" versions 5 size 20M;
+		print-time yes;
+		print-severity yes;
+		print-category yes;
+	};
+	channel query_log {
+		file "/var/log/named/query.log" versions 5 size 100M;
+		print-time yes;
+	};
+	channel xfers_log {
+		file "/var/log/named/transfers.log" versions 5 size 100M;
+		print-time yes;
+	};
+	channel update_log {
+		file "/var/log/named/update.log" versions 5 size 50M;
+		print-time yes;
+		severity debug 3;
+	};
+	category dnssec { default_log; };
+	category default { default_log; };
+	category general { default_log; };
+	category queries { query_log; };
+	category update { update_log; };
+};
+statistics-channels {
+	inet 127.0.0.1 port 8880 allow {trusted;};
+	// inet 10.0.2.15 port 8880 allow {trusted;};
+};
+//include rndc key here. must be called rndc-key in file
+include "/etc/rndc.key"; //did not include the option statements from rndc-confgen
+controls {
+	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
+};

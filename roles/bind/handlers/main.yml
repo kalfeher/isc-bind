@@ -1,0 +1,6 @@
+---
+  # Handler for BIND related events
+  - name: restart isc-bind
+    service:
+      name: isc-bind-named
+      state: restarted
