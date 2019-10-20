@@ -7,7 +7,7 @@
       gpgkey: "https://copr-be.cloud.fedoraproject.org/results/isc/{{ BindRelease }}/pubkey.gpg"
       gpgcheck: yes
       skip_if_unavailable: yes
-    #template: src=isc-bind-dev-epel-7.repo dest=/etc/yum.repos.d/isc-bind-dev-epel-7.repo
+
     tags: bind-repo
     # notify: yum-clean-metadata
     # uncomment notify if repo is removed 'state: absent'
@@ -19,7 +19,7 @@
     tags: isc-bind
 # I should use a 'when' command to add master, slave or recursive
   - name: Configure BIND Config file
-    template: src=named.conf.j2 dest=/etc/named.conf group=named
+    template: src=recursive-named.conf.j2 dest=/etc/named.conf group=named
     tags: isc-bind
     notify: restart isc-bind
 
@@ -37,4 +37,3 @@
       state: started
       enabled: yes
     tags: isc-bind
-  # Add a conf directory for future config files to live in
