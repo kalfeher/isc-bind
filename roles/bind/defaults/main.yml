@@ -1,5 +1,7 @@
 ---
   BindConfigFile: /etc/named.conf
+  # options: recursive, primary, secondary
+  ServerRole: recursive
   # options are bind-dev, bind (stable version), bind-esv (extended support)
   BindRelease: "bind"
   # Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
