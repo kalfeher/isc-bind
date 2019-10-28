@@ -19,17 +19,19 @@
     tags: isc-bind
 # I should use a 'when' command to add master, slave or recursive
   - name: Configure BIND Config file
-    template: src=recursive-named.conf.j2 dest=/etc/named.conf group=named
+    template:
+      src: {{ ServerRole }}-named.conf.j2
+      dest: /etc/named.conf group=named
     tags: isc-bind
     notify: restart isc-bind
 
-  - name: Add the conf directory
-    file:
-      path: /var/named/data/conf
-      state: directory
-      owner: named
-      group: named
-      mode: 0755
+  #- name: Add the conf directory
+  #  file:
+  #    path: /var/named/data/conf
+  #    state: directory
+  #    owner: named
+  #    group: named
+  #    mode: 0755
 
   - name: Start BIND
     service:
