@@ -20,7 +20,7 @@
 # I should use a 'when' command to add master, slave or recursive
   - name: Configure BIND Config file
     template:
-      src: {{ ServerRole }}-named.conf.j2
+      src: "{{ ServerRole }}-named.conf.j2"
       dest: /etc/named.conf group=named
     tags: isc-bind
     notify: restart isc-bind
