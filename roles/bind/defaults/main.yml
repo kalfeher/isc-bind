@@ -1,7 +1,7 @@
 ---
-  BindConfigFile: /etc/named.conf
+  #BindConfigFile: /etc/named.conf
   # options: recursive, primary, secondary
-  DataDirectory: /var/opt/isc/scls/isc-bind/named/data
+  #DataDirectory: /var/opt/isc/scls/isc-bind/named/data
   ServerRole: recursive
   # options are bind-dev, bind (stable version), bind-esv (extended support)
   BindRelease: "bind"

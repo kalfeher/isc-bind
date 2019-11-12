@@ -17,11 +17,27 @@
       name: isc-bind
       state: latest
     tags: isc-bind
-# I should use a 'when' command to add master, slave or recursive
-  - name: Configure BIND Config file
+#
+  - name: Configure BIND Config file for CentOS 7 (and lower)
     template:
       src: "{{ ServerRole }}-named.conf.j2"
-      dest: /etc/named.conf group=named
+      dest: /etc/opt/isc/isc-bind/named.conf group=named
+      backup: yes
+    when:
+      - ansible_facts['distribution'] == "CentOS"
+      - ansible_facts['distribution_major_version'] == "7"
+    tags: isc-bind
+    notify: restart isc-bind
+
+
+  - name: Configure BIND Config file for CentOS 8
+    template:
+      src: "{{ ServerRole }}-named.conf.j2"
+      dest: /etc/opt/isc/scls/isc-bind/named.conf group=named
+      backup: yes
+    when:
+      - ansible_facts['distribution'] == "CentOS"
+      - ansible_facts['distribution_major_version'] == "8"
     tags: isc-bind
     notify: restart isc-bind
 
