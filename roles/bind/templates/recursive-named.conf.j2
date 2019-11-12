@@ -19,7 +19,7 @@ acl "master-list" {
 # masters statement comes here. Be sure to understand the diff between masters acl and masters zone statement
 
 options {
-
+	// This directory needs to be conditional on CentOS release
 	directory "/var/named/data";
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
