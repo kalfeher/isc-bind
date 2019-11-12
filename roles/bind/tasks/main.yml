@@ -21,7 +21,8 @@
   - name: Configure BIND Config file for CentOS 7 (and lower)
     template:
       src: "{{ ServerRole }}-named.conf.j2"
-      dest: /etc/opt/isc/isc-bind/named.conf group=named
+      dest: /etc/opt/isc/isc-bind/named.conf
+      group: named
       backup: yes
     when:
       - ansible_facts['distribution'] == "CentOS"
@@ -33,7 +34,8 @@
   - name: Configure BIND Config file for CentOS 8
     template:
       src: "{{ ServerRole }}-named.conf.j2"
-      dest: /etc/opt/isc/scls/isc-bind/named.conf group=named
+      dest: /etc/opt/isc/scls/isc-bind/named.conf
+      group: named
       backup: yes
     when:
       - ansible_facts['distribution'] == "CentOS"
