@@ -19,14 +19,14 @@
     tags: isc-bind
 #
   - name: set paths for RHEL7
-    vars:
+    set_fact:
       confpath: "{{ confpathrhel7 }}"
       datapath: "{{ datapathrhel7 }}"
     when:
       - ansible_facts['os_family'] == 'RedHat'
       - ansible_facts['distribution_major_version'] == "7"
   - name: set paths for RHEL8
-    vars:
+    set_fact:
       confpath: "{{ confpathrhel8 }}"
       datapath: "{{ datapathrhel8 }}"
     when:
