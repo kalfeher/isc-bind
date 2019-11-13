@@ -19,8 +19,13 @@ acl "master-list" {
 # masters statement comes here. Be sure to understand the diff between masters acl and masters zone statement
 
 options {
-	// This directory needs to be conditional on CentOS release
-	directory "/var/named/data";
+	// This directory needs to be conditional on CentOS/Redhat release
+	// use alternate file for other Linux distributions
+
+	directory "{{ datapath }}";
+
+
+
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
 	allow-new-zones yes;
@@ -39,7 +44,6 @@ options {
 		trusted; //must be per zone
 	};*/
 	dnssec-enable yes;
-	dnssec-validation auto;
 	serial-update-method unixtime;
 	zone-statistics full;
 
@@ -81,7 +85,7 @@ statistics-channels {
 	// inet 10.0.2.15 port 8880 allow {trusted;};
 };
 //include rndc key here. must be called rndc-key in file
-include "/etc/rndc.key"; //did not include the option statements from rndc-confgen
+include "/{{ confpath }}/rndc.key"; //did not include the option statements from rndc-confgen
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
 };

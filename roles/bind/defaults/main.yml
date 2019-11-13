@@ -5,6 +5,12 @@
   ServerRole: recursive
   # options are bind-dev, bind (stable version), bind-esv (extended support)
   BindRelease: "bind"
+  confpath: /etc/named
+  datapath: /var/named
+  confpathrhel8: /etc/opt/isc/scls/isc-bind
+  confpathrhel7: /etc/opt/isc/isc-bind
+  datapathrhel8: /var/opt/isc/scls/isc-bind/named/data
+  datapathrhel7: /var/opt/isc/isc-bind/named/data
   # Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
   ListenV4: "" #"127.0.0.1;"
   ListenV6: "" #"::1;"
