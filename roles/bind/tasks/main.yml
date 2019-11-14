@@ -23,7 +23,8 @@
       path: "{{ logpath }}"
       state: directory
       group: "{{ binduser }}"
-      mode: "770"
+      mode: 0770
+      
   - name: set paths for RHEL7
     set_fact:
       confpath: "{{ confpathrhel7 }}"
@@ -47,14 +48,6 @@
       backup: yes
     tags: isc-bind
     notify: restart isc-bind
-
-  #- name: Add the conf directory
-  #  file:
-  #    path: /var/named/data/conf
-  #    state: directory
-  #    owner: named
-  #    group: named
-  #    mode: 0755
 
   - name: Start BIND
     service:

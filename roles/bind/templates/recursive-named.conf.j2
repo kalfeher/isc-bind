@@ -1,10 +1,7 @@
 /* Very basic recursive config.
 */
 
-/* Nothing is allowed to transfer. */
-acl "xfr" {
-	"none";
-};
+
 
 /* allowed to do most things, so keep this to management and troubleshooting hosts */
 acl "trusted" {
@@ -12,11 +9,7 @@ acl "trusted" {
 	::1/128;
 	{{ TrustedACL }}
 };
-acl "master-list" {
-	# A list to put master servers in
-	127.0.0.0/8;
-};
-# masters statement comes here. Be sure to understand the diff between masters acl and masters zone statement
+
 
 options {
 	// This directory needs to be conditional on CentOS/Redhat release
@@ -29,7 +22,7 @@ options {
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
 	allow-new-zones yes;
-	#dnssec-validation auto; // I think this is default now anyways
+	#dnssec-validation auto;
 	allow-query {
 		trusted;
 	};
@@ -82,10 +75,10 @@ logging {
 };
 statistics-channels {
 	inet 127.0.0.1 port 8880 allow {trusted;};
-	// inet 10.0.2.15 port 8880 allow {trusted;};
+
 };
-//include rndc key here. must be called rndc-key in file
-include "/{{ confpath }}/rndc.key"; //did not include the option statements from rndc-confgen
+
+include "/{{ confpath }}/rndc.key";
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
 };

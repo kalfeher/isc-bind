@@ -17,4 +17,4 @@
   ListenStatsV6: "" #"::1;"
   ListenrndcV4: "" #"127.0.0.1;"
   ListenrndcV6: "" #"::1;"
-  TrustedACL: "" #addresses that will be added to the trusted access control list
+  TrustedACL: "fd01:1:1:1::/64;" #addresses that will be added to the trusted access control list
