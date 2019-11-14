@@ -22,9 +22,11 @@ options {
 	#dnssec-validation auto;
 	allow-query {
 		trusted;
+		clients;
 	};
 	allow-query-cache {
 		trusted;
+		clients;
 	};
 	zone-statistics full;
 };
