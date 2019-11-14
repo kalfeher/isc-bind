@@ -18,6 +18,12 @@
       state: latest
     tags: isc-bind
 #
+  - name: create log directory
+    file:
+      path: "{{ logpath }}"
+      state: directory
+      group: "{{ binduser }}"
+      mode: "770"
   - name: set paths for RHEL7
     set_fact:
       confpath: "{{ confpathrhel7 }}"
