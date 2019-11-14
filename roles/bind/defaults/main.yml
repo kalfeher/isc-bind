@@ -6,7 +6,7 @@
   # Directories and files will be set to allow this user read and write access as required
   binduser: named
   # options are bind-dev, bind (stable version), bind-esv (extended support)
-  BindRelease: "bind"
+  BindRelease: "bind-dev"
   confpath: /etc/named
   datapath: /var/named
   logpath: /var/log/named
@@ -17,4 +17,5 @@
   ListenStatsV6: "" #"::1;"
   ListenrndcV4: "" #"127.0.0.1;"
   ListenrndcV6: "" #"::1;"
-  TrustedACL: "fd01:1:1:1::/64;" #addresses that will be added to the trusted access control list
+  TrustedACL: "" #addresses that will be added to the trusted access control list
+  queryclientsACL: "fd01:1:1:1::/64;"

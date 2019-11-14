@@ -9,16 +9,13 @@ acl "trusted" {
 	::1/128;
 	{{ TrustedACL }}
 };
-
+/* Query clients. User networks go here. */
+acl "clients" {
+	{{ queryclientsACL }}
+};
 
 options {
-	// This directory needs to be conditional on CentOS/Redhat release
-	// use alternate file for other Linux distributions
-
 	directory "{{ datapath }}";
-
-
-
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
 	allow-new-zones yes;
@@ -29,17 +26,7 @@ options {
 	allow-query-cache {
 		trusted;
 	};
-	//leaving allow-recursion statement out for now
-	allow-transfer {
-		trusted; // all other xfr will be per zone or view
-	};
-	/* allow-update {
-		trusted; //must be per zone
-	};*/
-	dnssec-enable yes;
-	serial-update-method unixtime;
 	zone-statistics full;
-
 };
 
 logging {
@@ -77,7 +64,6 @@ statistics-channels {
 	inet 127.0.0.1 port 8880 allow {trusted;};
 
 };
-
 include "/{{ confpath }}/rndc.key";
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
