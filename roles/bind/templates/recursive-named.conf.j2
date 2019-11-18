@@ -18,13 +18,12 @@ options {
 	directory "{{ datapath }}";
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
-	allow-new-zones yes;
 	#dnssec-validation auto;
 	allow-query {
 		trusted;
 		clients;
 	};
-	allow-query-cache {
+	allow-recursion {
 		trusted;
 		clients;
 	};

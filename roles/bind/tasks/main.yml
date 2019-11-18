@@ -24,7 +24,7 @@
       state: directory
       group: "{{ binduser }}"
       mode: 0770
-      
+
   - name: set paths for RHEL7
     set_fact:
       confpath: "{{ confpathrhel7 }}"
@@ -55,3 +55,11 @@
       state: started
       enabled: yes
     tags: isc-bind
+
+  - name: Make sure FirewallD allows DNS through (UDP amd TCP)
+    firewalld:
+      service: dns
+      permanent: yes
+      state: enabled
+      immediate: yes
+      zone: "{{ firewalldZone }}"

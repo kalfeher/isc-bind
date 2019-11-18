@@ -1,7 +1,7 @@
 ---
-  #BindConfigFile: /etc/named.conf
+  firewalldZone: "public"
+
   # options: recursive, primary, secondary
-  #DataDirectory: /var/opt/isc/scls/isc-bind/named/data
   ServerRole: recursive
   # Directories and files will be set to allow this user read and write access as required
   binduser: named
@@ -11,8 +11,8 @@
   datapath: /var/named
   logpath: /var/log/named
   # Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
-  ListenV4: "" #"127.0.0.1;"
-  ListenV6: "" #"::1;"
+  ListenV4: "{{ ansible_default_ipv4[address] }};" #"127.0.0.1;"
+  ListenV6: "{{ ansible_default_ipv6[address] }};" #"::1;"
   ListenStatsV4: "" #"127.0.0.1;"
   ListenStatsV6: "" #"::1;"
   ListenrndcV4: "" #"127.0.0.1;"
