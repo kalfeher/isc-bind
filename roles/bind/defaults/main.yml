@@ -11,8 +11,8 @@
   datapath: /var/named
   logpath: /var/log/named
   # Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
-  ListenV4: "{{ ansible_default_ipv4[address] }};" #"127.0.0.1;"
-  ListenV6: "{{ ansible_default_ipv6[address] }};" #"::1;"
+  ListenV4: "" #"127.0.0.1;"
+  ListenV6: "" #"::1;"
   ListenStatsV4: "" #"127.0.0.1;"
   ListenStatsV6: "" #"::1;"
   ListenrndcV4: "" #"127.0.0.1;"
