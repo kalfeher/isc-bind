@@ -62,4 +62,4 @@
       state: enabled
       immediate: yes
       zone: "{{ firewalldZone }}"
-    when: "{{ ListenV4 }} != '' and {{ ListenV6 }} != '' "
+    when: ListenV4 != '' and ListenV6 != ''
