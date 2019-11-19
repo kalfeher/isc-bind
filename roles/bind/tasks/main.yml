@@ -7,7 +7,6 @@
       gpgkey: "https://copr-be.cloud.fedoraproject.org/results/isc/{{ BindRelease }}/pubkey.gpg"
       gpgcheck: yes
       skip_if_unavailable: yes
-
     tags: bind-repo
     # notify: yum-clean-metadata
     # uncomment notify if repo is removed 'state: absent'
@@ -63,3 +62,4 @@
       state: enabled
       immediate: yes
       zone: "{{ firewalldZone }}"
+    when: "{{ ListenV4 }} != '' and {{ ListenV6 }} != '' "
