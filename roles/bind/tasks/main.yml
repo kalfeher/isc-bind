@@ -23,6 +23,12 @@
       state: directory
       group: "{{ binduser }}"
       mode: 0770
+  - name: Add ISC-BIND SCL paths to user profiles.
+    lineinfile:
+      path: /etc/profile.d/sh.local
+      state: present
+      line: source scl_source enable isc-bind
+      insertafter: EOF
 
   - name: set paths for RHEL7
     set_fact:
