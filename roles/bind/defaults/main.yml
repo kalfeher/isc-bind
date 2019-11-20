@@ -27,3 +27,9 @@
   ListenrndcV6: "" #"::1;"
   TrustedACL: "" #addresses that will be added to the trusted access control list
   queryclientsACL: "fd01:1:1:1::/64;"
+  # Some consumer devices rely on re-binding. May break home network devices.
+  # Include RFCs: 1918, 4193,
+  re_bind_IP_ACL: "192.168/16; 10/8; 172.16/12; 127/8; 169.254/16; ::1/128; fc00::/7; fe80::/10;"
+  re_bind_IP_exception: "" # "example.com"; "example.net". Add domains which may answer with internal IPs.
+  re_bind_name_List: "" # "example.com"; "example.net";. Domains which should not be cname'd
+  re_bind_name_exceptions: "" # "example.com"; "example.net". domains which can return cnames to the list above (often the same).

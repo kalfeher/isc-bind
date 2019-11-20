@@ -37,6 +37,7 @@
     when:
       - ansible_facts['os_family'] == 'RedHat'
       - ansible_facts['distribution_major_version'] == "7"
+
   - name: set paths for RHEL8
     set_fact:
       confpath: "{{ confpathrhel8 }}"
@@ -45,7 +46,7 @@
       - ansible_facts['os_family'] == 'RedHat'
       - ansible_facts['distribution_major_version'] == "8"
 
-  - name: Configure BIND Config file
+  - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ ServerRole }}-named.conf.j2"
       dest: "{{ confpath }}/named.conf"

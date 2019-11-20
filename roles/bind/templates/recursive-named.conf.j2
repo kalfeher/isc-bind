@@ -26,6 +26,18 @@ options {
 		clients;
 	};
 	zone-statistics full;
+	deny-answer-addresses { {{ re_bind_IP_ACL }} }
+		{% if re_bind_IP_exception %}
+		except-from { {{ re_bind_IP_exception }} }
+		{% endif %}
+	;
+	{% if re_bind_name_List %}
+	deny-answer-aliases { {{ re_bind_name_List }} }
+		{% if re_bind_name_exceptions %}
+		except-from { {{ re_bind_name_exceptions }} }
+		{% endif %}
+	;
+	{% endif %}
 };
 
 logging {
@@ -69,7 +81,12 @@ logging {
 };
 statistics-channels {
 	inet 127.0.0.1 port 8880 allow {trusted;};
-
+	{% if ListenStatsV4 %}
+	inet {{ ListenStatsV4 }} port 8880 allow {trusted;};
+	{% endif %}
+	{% if ListenStatsV6 %}
+	inet {{ ListenStatsV6 }} port 8880 allow {trusted;};
+	{% endif %}
 };
 include "/{{ confpath }}/rndc.key";
 controls {
