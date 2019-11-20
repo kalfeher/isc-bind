@@ -5,8 +5,10 @@
       name: isc-bind-named
       state: restarted
 
-  - name: reconfig isc-bind
-    shell: scl enable isc-bind rndc reconfig
+  - name: reconfig isc-bind (Software Collection)
+    shell: scl enable isc-bind -- rndc reconfig
+    listen: "reconfig isc-bind scl"
 
-  - name: reload isc-bind
-    shell: scl enable isc-bind rndc reload
+  - name: reload isc-bind (Software Collection)
+    shell: scl enable isc-bind -- rndc reload
+    listen: "reload isc-bind scl"
