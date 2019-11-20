@@ -1,8 +1,6 @@
 /* Very basic recursive config.
 */
 
-
-
 /* allowed to do most things, so keep this to management and troubleshooting hosts */
 acl "trusted" {
 	127.0.0.0/8;
@@ -37,29 +35,37 @@ logging {
 		severity dynamic;
 	};
 	channel default_log {
-		file "/var/log/named/named.log" versions 5 size 20M;
+		file "{{ logpath }}/named.log" versions 5 size 100M;
 		print-time yes;
 		print-severity yes;
 		print-category yes;
 	};
 	channel query_log {
-		file "/var/log/named/query.log" versions 5 size 100M;
+		file "{{ logpath }}/query.log" versions 5 size 100M;
 		print-time yes;
 	};
 	channel xfers_log {
-		file "/var/log/named/transfers.log" versions 5 size 100M;
+		file "{{ logpath }}/transfers.log" versions 5 size 100M;
 		print-time yes;
 	};
 	channel update_log {
-		file "/var/log/named/update.log" versions 5 size 50M;
+		file "{{ logpath }}/update.log" versions 5 size 100M;
 		print-time yes;
 		severity debug 3;
+	};
+	channel rpz_log {
+		file "{{ logpath }}/rpz.log" versions 5 size 100M;
+		print-time yes;
+		print-category yes;
+		print-severity yes;
+		severity info;
 	};
 	category dnssec { default_log; };
 	category default { default_log; };
 	category general { default_log; };
 	category queries { query_log; };
 	category update { update_log; };
+	category rpz { rpz_log };
 };
 statistics-channels {
 	inet 127.0.0.1 port 8880 allow {trusted;};

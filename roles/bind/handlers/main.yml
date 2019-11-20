@@ -4,3 +4,9 @@
     service:
       name: isc-bind-named
       state: restarted
+      
+  - name: reconfig isc-bind
+    shell: rndc reconfig
+
+  - name: reload isc-bind
+    shell: rndc reload

@@ -46,7 +46,7 @@
       group: named
       backup: yes
     tags: isc-bind
-    notify: restart isc-bind
+    notify: reconfig isc-bind
 
   - name: Start BIND
     service:
