@@ -44,7 +44,7 @@ options {
   allow-transfer {
     trusted;
     {% if primary_masters_list %}
-      {% for name,  in primary_masters_list.items() %}
+      {% for name, addresses in primary_masters_list.items() %}
     "{{ name }}-acl";
       {% endfor %}
     {% endif %}
