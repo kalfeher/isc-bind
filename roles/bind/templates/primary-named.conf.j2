@@ -29,14 +29,12 @@ masters "{{ name }}-master-list" {
 
 options {
 	directory "{{ datapath }}";
-  version "{{ version_text }};";
-	listen-on { 127.0.0.1; {{ ListenV4 }} };
-	listen-on-v6 { ::1; {{ ListenV6 }} };
-	allow-query {any;};
+  version "{{ version_text }}";
+  listen-on { 127.0.0.1; {{ ListenV4 }} };
+  listen-on-v6 { ::1; {{ ListenV6 }} };
+  allow-query {any;};
   allow-new-zones {{ rndc_add_zone }};
   recursion no;
-  additional-from-auth no;
-  additional-from-cache no;
   minimal-any yes;
   minimal-responses yes;
   serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
