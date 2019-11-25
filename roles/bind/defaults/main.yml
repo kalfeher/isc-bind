@@ -15,7 +15,7 @@
   # Log destination
   logpath: /var/log/named
   # For all ACL vars Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
-
+  version_text: "-- DNS --"
   # If these two vars are left empty only queries will only be possible from the localhost
   ListenV4: "" #"127.0.0.1;"
   ListenV6: "" #"::1;"
@@ -33,3 +33,8 @@
   re_bind_IP_exception: "" # "example.com"; "example.net". Add domains which may answer with internal IPs.
   re_bind_name_List: "" # "example.com"; "example.net";. Domains which should not be cname'd
   re_bind_name_exceptions: "" # "example.com"; "example.net". domains which can return cnames to the list above (often the same).
+  xfer_clients: "" # List of clients allowed to xfr "192.168.0.1; 192.168.10.11; 10.0.20.11; fd01:2:2:2::1;"
+  rndc_add_zone: "no" # change to yes to dynamically add zones.
+  primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
+        # blue-org: "fd01:2:2:2::1; 192.168.0.1;"
+        # green-org: "10.10.0.1; 10.200.0.1;"

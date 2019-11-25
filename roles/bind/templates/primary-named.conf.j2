@@ -1,44 +1,56 @@
-/* Very basic recursive config.
-*/
+acl "xfer" {
+{% if xfer_clients %}
+  {{ xfer_clients }}
+{% else %}
+	"none";
+{% endif %}
+};
+
 
 acl "trusted" {
 	127.0.0.0/8;
 	::1/128;
 	{{ TrustedACL }}
 };
-/* Query clients. User networks go here. */
-acl "clients" {
-	{{ queryclientsACL }}
+{% if primary_masters_list %}
+  {% for name, addresses in primary_masters_clause.items() %}
+acl "{{ name }}-acl" {
+  {{ addresses }}
 };
+  {% endfor %}
+{% endif %}
+{% if primary_masters_list %}
+  {% for name, addresses in primary_masters_clause.items() %}
+masters "{{ name }}-master-list" {
+  {{ addresses }}
+};
+  {% endfor %}
+{% endif %}
 
 options {
 	directory "{{ datapath }}";
+  version "{{ version_text }};";
 	listen-on { 127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 { ::1; {{ ListenV6 }} };
-	#dnssec-validation auto;
-	allow-query {
-		trusted;
-		clients;
-	};
-	allow-recursion {
-		trusted;
-		clients;
-	};
-	zone-statistics full;
-	deny-answer-addresses { {{ re_bind_IP_ACL }} }
-		{% if re_bind_IP_exception %}
-		except-from { {{ re_bind_IP_exception }} }
-		{% endif %}
-	;
-	{% if re_bind_name_List %}
-	deny-answer-aliases { {{ re_bind_name_List }} }
-		{% if re_bind_name_exceptions %}
-		except-from { {{ re_bind_name_exceptions }} }
-		{% endif %}
-	;
-	{% endif %}
+	allow-query {any;};
+  allow-new-zones {{ rndc_add_zone }};
+  recursion no;
+  additional-from-auth no;
+  additional-from-cache no;
+  minimal-any yes;
+  minimal-responses yes;
+  serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
+  zone-statistics full;
+  allow-transfer {
+    trusted;
+    {% if primary_masters_list %}
+      {% for name,  in primary_masters_clause.items() %}
+    "{{ name }}-acl";
+      {% endfor %}
+    {% endif %}
+  };
+  allow-update none;
 };
-
 logging {
 	channel default_debug {
 		file "named.run";
@@ -64,14 +76,7 @@ logging {
 		print-time yes;
 		severity debug 3;
 	};
-	channel rpz_log {
-		file "{{ logpath }}/rpz.log" versions 5 size 100M;
-		print-time yes;
-		print-category yes;
-		print-severity yes;
-		severity info;
-	};
-	category dnssec { default_log; };
+  category dnssec { default_log; };
 	category default { default_log; };
 	category general { default_log; };
 	category queries { query_log; };
