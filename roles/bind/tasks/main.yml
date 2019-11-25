@@ -45,6 +45,11 @@
     when:
       - ansible_facts['os_family'] == 'RedHat'
       - ansible_facts['distribution_major_version'] == "8"
+  - name: set paths for Fedora
+    set_fact:
+      confpath: "{{ confpathrhel8 }}"
+      datapath: "{{ datapathrhel8 }}"
+    when: ansible_distribution == 'Fedora'
 
   - name: Configure BIND Config file based on ServerRole
     template:
