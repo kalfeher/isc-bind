@@ -13,14 +13,14 @@ acl "trusted" {
 	{{ TrustedACL }}
 };
 {% if primary_masters_list %}
-  {% for name, addresses in primary_masters_clause.items() %}
+  {% for name, addresses in primary_masters_list.items() %}
 acl "{{ name }}-acl" {
   {{ addresses }}
 };
   {% endfor %}
 {% endif %}
 {% if primary_masters_list %}
-  {% for name, addresses in primary_masters_clause.items() %}
+  {% for name, addresses in primary_masters_list.items() %}
 masters "{{ name }}-master-list" {
   {{ addresses }}
 };
@@ -44,7 +44,7 @@ options {
   allow-transfer {
     trusted;
     {% if primary_masters_list %}
-      {% for name,  in primary_masters_clause.items() %}
+      {% for name,  in primary_masters_list.items() %}
     "{{ name }}-acl";
       {% endfor %}
     {% endif %}
