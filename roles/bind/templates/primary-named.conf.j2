@@ -40,14 +40,14 @@ options {
   serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
   zone-statistics full;
   allow-transfer {
-    trusted;
+  trusted;
     {% if primary_masters_list %}
       {% for name, addresses in primary_masters_list.items() %}
     "{{ name }}-acl";
       {% endfor %}
     {% endif %}
   };
-  allow-update none;
+  allow-update {none;};
 };
 logging {
 	channel default_debug {
