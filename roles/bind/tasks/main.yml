@@ -85,7 +85,7 @@
       force: no
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
-      mode: 0770
+      mode: 0660
     loop: "{{ pri_domains }}"
     when: ServerRole == 'primary'
   - name: Start BIND
