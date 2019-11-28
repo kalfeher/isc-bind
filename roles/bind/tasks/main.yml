@@ -65,6 +65,9 @@
       backup: yes
     tags: isc-bind
     notify: reconfig isc-bind scl
+  - name: Load Primary specific vars
+    include_vars: primary.yml
+    when: ServerRole == 'primary'
   - name: Add Primary domain directories
     file:
       path: "{{ datapath }}/pri/{{ item }}"
@@ -75,7 +78,6 @@
     loop: "{{ pri_domains }}"
     when: ServerRole == 'primary'
   - name: Add Primary domain zone files if not present
-    include_vars: primary.yml
     template:
       src: primary.db.j2
       dest: "{{ datapath }}/pri/{{ item }}/{{ item }}.db"
