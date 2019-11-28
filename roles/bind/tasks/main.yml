@@ -50,13 +50,14 @@
       confpath: "{{ confpathrhel8 }}"
       datapath: "{{ datapathrhel8 }}"
     when: ansible_distribution == 'Fedora'
-  - name: Add primary zone file directory
+  - name: Add directory for primary zones
     file:
       path: "{{ datapath }}/pri"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0770
+    when: ServerRole == 'primary'
   - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ ServerRole }}-named.conf.j2"
@@ -68,7 +69,7 @@
   - name: Load Primary specific vars
     include_vars: primary.yml
     when: ServerRole == 'primary'
-  - name: Add Primary domain directories
+  - name: Add Primary per domain directories
     file:
       path: "{{ datapath }}/pri/{{ item }}"
       state: directory
