@@ -6,6 +6,11 @@ The `BindRelease` variable will govern which release of BIND is used. There are 
 ## Templates and Defaults
 Configuration templates will depend on the serverrole.
 
+### Role: recursive
+A recursive server requires no additional variables.
+A basic recursive configuration file will be added to BIND.
+If either {{ListenrndcV4}} or {{ListenrndcV6}} are not empty, then a rule will be added to firewalld allowing DNS inbound on the public zone:  {{firewalldZone}}.
+
 ## requirements.yml
 Add the following lines to `requirements.yml` :
 ~~~

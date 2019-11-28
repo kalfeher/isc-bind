@@ -38,3 +38,14 @@
   primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
         # blue-org: "fd01:2:2:2::1; 192.168.0.1;"
         # green-org: "10.10.0.1; 10.200.0.1;"
+  default_ttl: 3600
+  soa_values:
+    serial: 1000
+    refresh: 14400
+    retry: 28800
+    expire: 604800
+    minimum: 86400
+  pri_domains:
+    - example.net
+    - example.info
+    - example.com

@@ -1,0 +1,3 @@
+---
+  soa_root_email: root.example.com # Primary server operator's public email. do not use '@'
+  

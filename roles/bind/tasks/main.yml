@@ -50,7 +50,13 @@
       confpath: "{{ confpathrhel8 }}"
       datapath: "{{ datapathrhel8 }}"
     when: ansible_distribution == 'Fedora'
-
+  - name: Add primary zone file directory
+    file:
+      path: "{{ datapath }}/pri"
+      state: directory
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
   - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ ServerRole }}-named.conf.j2"
@@ -59,7 +65,26 @@
       backup: yes
     tags: isc-bind
     notify: reconfig isc-bind scl
-
+  - name: Add Primary domain directories
+    file:
+      path: "{{ datapath }}/pri/{{ item }}"
+      state: directory
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
+    loop: "{{ pri_domains }}"
+    when: ServerRole == 'primary'
+  - name: Add Primary domain zone files if not present
+    include_vars: primary.yml
+    template:
+      src: primary.db.j2
+      dest: "{{ datapath }}/pri/{{ item }}/{{ item }}.db"
+      force: no
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
+    loop: "{{ pri_domains }}"
+    when: ServerRole == 'primary'
   - name: Start BIND
     service:
       name: isc-bind-named
