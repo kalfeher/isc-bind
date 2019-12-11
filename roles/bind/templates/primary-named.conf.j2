@@ -95,5 +95,5 @@ controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
 };
 {% for domain in pri_domains %}
-include "{{ confpath }}/{{ domain }}.zone.conf"
+include "{{ confpath }}/{{ domain }}.zone.conf";
 {% endfor %}
