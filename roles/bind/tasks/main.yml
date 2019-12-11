@@ -71,24 +71,15 @@
       backup: yes
     tags: isc-bind
     notify: reconfig isc-bind scl
+
   - name: Load Primary specific vars
     include_vars: primary.yml
     when: ServerRole == 'primary'
   - name: Add Primary per domain directories
-    file:
-      path: "{{ datapath }}/pri/{{ item }}"
-      state: directory
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0770
-    file:
-      path: "{{ datapath }}/pri/{{ item }}/keys"
-      state: directory
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0770
+    include_tasks: pri_dir_setup.yml
     loop: "{{ pri_domains }}"
     when: ServerRole == 'primary'
+
   - name: Add Primary domain zone files if not present
     template:
       src: primary.db.j2
@@ -99,6 +90,7 @@
       mode: 0660
     loop: "{{ pri_domains }}"
     when: ServerRole == 'primary'
+    
   - name: Copy Zone statement files for primary domains
     template:
       src: local_signed_zone.j2
@@ -110,7 +102,7 @@
     loop: "{{ pri_domains }}"
     loop_control:
       loop_var: domain
-      
+
   - name: Start BIND
     service:
       name: isc-bind-named
