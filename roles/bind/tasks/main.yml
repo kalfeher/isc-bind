@@ -90,7 +90,7 @@
       mode: 0660
     loop: "{{ pri_domains }}"
     when: ServerRole == 'primary'
-    
+
   - name: Copy Zone statement files for primary domains
     template:
       src: local_signed_zone.j2
@@ -102,7 +102,7 @@
     loop: "{{ pri_domains }}"
     loop_control:
       loop_var: domain
-
+    when: ServerRole == 'primary'
   - name: Start BIND
     service:
       name: isc-bind-named
