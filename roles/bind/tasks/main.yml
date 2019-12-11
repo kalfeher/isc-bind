@@ -75,9 +75,12 @@
   - name: Load Primary specific vars
     include_vars: primary.yml
     when: ServerRole == 'primary'
+
   - name: Add Primary per domain directories
     include_tasks: pri_dir_setup.yml
     loop: "{{ pri_domains }}"
+    loop_control:
+      loop_var: domain
     when: ServerRole == 'primary'
 
   - name: Add Primary domain zone files if not present
