@@ -90,7 +90,10 @@ statistics-channels {
 	inet {{ ListenStatsV6 }} port 8880 allow {trusted;};
 	{% endif %}
 };
-include "/{{ confpath }}/rndc.key";
+include "{{ confpath }}/rndc.key";
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
 };
+{% for domain in pri_domains %}
+include "{{ confpath }}/{{ domain }}.zone.conf"
+{% endfor %}
