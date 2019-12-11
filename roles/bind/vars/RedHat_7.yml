@@ -1,0 +1,3 @@
+---
+    confpath: /etc/opt/isc/isc-bind
+    datapath: /var/opt/isc/isc-bind/named/data

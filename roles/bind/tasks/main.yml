@@ -30,26 +30,31 @@
       line: source scl_source enable isc-bind
       insertafter: EOF
 
-  - name: set paths for RHEL7
-    set_fact:
-      confpath: "{{ confpathrhel7 }}"
-      datapath: "{{ datapathrhel7 }}"
-    when:
-      - ansible_facts['os_family'] == 'RedHat'
-      - ansible_facts['distribution_major_version'] == "7"
+  - name: Set distribution specific paths
+    include_vars: "{{ item }}"
+    with_first_found:
+        - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution }}.yml"
+#  - name: set paths for RHEL7
+#    set_fact:
+#      confpath: "{{ confpathrhel7 }}"
+#      datapath: "{{ datapathrhel7 }}"
+#    when:
+#      - ansible_facts['os_family'] == 'RedHat'
+#      - ansible_facts['distribution_major_version'] == "7"
 
-  - name: set paths for RHEL8
-    set_fact:
-      confpath: "{{ confpathrhel8 }}"
-      datapath: "{{ datapathrhel8 }}"
-    when:
-      - ansible_facts['os_family'] == 'RedHat'
-      - ansible_facts['distribution_major_version'] == "8"
-  - name: set paths for Fedora
-    set_fact:
-      confpath: "{{ confpathrhel8 }}"
-      datapath: "{{ datapathrhel8 }}"
-    when: ansible_distribution == 'Fedora'
+#  - name: set paths for RHEL8
+#    set_fact:
+#      confpath: "{{ confpathrhel8 }}"
+#      datapath: "{{ datapathrhel8 }}"
+#    when:
+#      - ansible_facts['os_family'] == 'RedHat'
+#      - ansible_facts['distribution_major_version'] == "8"
+#  - name: set paths for Fedora
+#    set_fact:
+#      confpath: "{{ confpathrhel8 }}"
+#      datapath: "{{ datapathrhel8 }}"
+#    when: ansible_distribution == 'Fedora'
   - name: Add directory for primary zones
     file:
       path: "{{ datapath }}/pri"
