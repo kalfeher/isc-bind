@@ -78,6 +78,9 @@
 
   - name: Add Primary per domain directories
     include_tasks: pri_dir_setup.yml
+    vars:
+      datapath: "{{ datapath }}"
+      binduser: "{{ binduser }}"
     loop: "{{ pri_domains }}"
     loop_control:
       loop_var: domain
