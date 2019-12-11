@@ -1,0 +1,8 @@
+zone "{{ domain }}" IN {
+  type primary;
+  file "pri/{{ domain }}/{{ domain }}.db";
+  //also-notify ;
+  allow-query { any; };
+  update-policy local;
+  key-directory "pri/{{ domain }}/keys";
+};
