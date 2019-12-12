@@ -1,0 +1,39 @@
+---
+  - name: Load Primary specific vars
+    include_vars: primary.yml
+
+  - name: Add directory for primary zones
+    file:
+      path: "{{ datapath }}/pri"
+      state: directory
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
+
+  - name: Add Primary per domain directories
+    include_tasks: pri_dir_setup.yml
+    loop: "{{ pri_domains }}"
+    loop_control:
+      loop_var: domain
+
+  - name: Add Primary domain zone files if not present
+    template:
+      src: primary.db.j2
+      dest: "{{ datapath }}/pri/{{ item }}/{{ item }}.db"
+      force: no
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0660
+    loop: "{{ pri_domains }}"
+
+  - name: Copy Zone statement files for primary domains
+    template:
+      src: local_signed_zone.j2
+      dest: "{{ confpath }}/{{ domain }}.zone.conf"
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      backup: yes
+      mode: 0660
+    loop: "{{ pri_domains }}"
+    loop_control:
+      loop_var: domain

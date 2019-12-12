@@ -16,13 +16,14 @@
       name: isc-bind
       state: latest
     tags: isc-bind
-#
+
   - name: create log directory
     file:
       path: "{{ logpath }}"
       state: directory
       group: "{{ binduser }}"
       mode: 0770
+
   - name: Add ISC-BIND SCL paths to user profiles.
     lineinfile:
       path: /etc/profile.d/sh.local
@@ -35,34 +36,11 @@
     with_first_found:
         - "{{ ansible_os_family }}_{{ ansible_distribution_major_version }}.yml"
         - "{{ ansible_distribution }}.yml"
-#  - name: set paths for RHEL7
-#    set_fact:
-#      confpath: "{{ confpathrhel7 }}"
-#      datapath: "{{ datapathrhel7 }}"
-#    when:
-#      - ansible_facts['os_family'] == 'RedHat'
-#      - ansible_facts['distribution_major_version'] == "7"
 
-#  - name: set paths for RHEL8
-#    set_fact:
-#      confpath: "{{ confpathrhel8 }}"
-#      datapath: "{{ datapathrhel8 }}"
-#    when:
-#      - ansible_facts['os_family'] == 'RedHat'
-#      - ansible_facts['distribution_major_version'] == "8"
-#  - name: set paths for Fedora
-#    set_fact:
-#      confpath: "{{ confpathrhel8 }}"
-#      datapath: "{{ datapathrhel8 }}"
-#    when: ansible_distribution == 'Fedora'
-  - name: Add directory for primary zones
-    file:
-      path: "{{ datapath }}/pri"
-      state: directory
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0770
+  - name: Primary Server configuration
+    include_tasks: primary.yml
     when: ServerRole == 'primary'
+
   - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ ServerRole }}-named.conf.j2"
@@ -72,43 +50,6 @@
     tags: isc-bind
     notify: reconfig isc-bind scl
 
-  - name: Load Primary specific vars
-    include_vars: primary.yml
-    when: ServerRole == 'primary'
-
-  - name: Add Primary per domain directories
-    include_tasks: pri_dir_setup.yml
-    #vars:
-    #  datapath: "{{ datapath }}"
-    #  binduser: "{{ binduser }}"
-    loop: "{{ pri_domains }}"
-    loop_control:
-      loop_var: domain
-    when: ServerRole == 'primary'
-
-  - name: Add Primary domain zone files if not present
-    template:
-      src: primary.db.j2
-      dest: "{{ datapath }}/pri/{{ item }}/{{ item }}.db"
-      force: no
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0660
-    loop: "{{ pri_domains }}"
-    when: ServerRole == 'primary'
-
-  - name: Copy Zone statement files for primary domains
-    template:
-      src: local_signed_zone.j2
-      dest: "{{ confpath }}/{{ domain }}.zone.conf"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      backup: yes
-      mode: 0660
-    loop: "{{ pri_domains }}"
-    loop_control:
-      loop_var: domain
-    when: ServerRole == 'primary'
   - name: Start BIND
     service:
       name: isc-bind-named
