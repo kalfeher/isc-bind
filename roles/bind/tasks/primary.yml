@@ -47,7 +47,7 @@
       label: domain.item.name
 
 
-  - name: Copy Zone statement files for dynamic primary domains
+  - name: Copy Zone statement files for primary domains
     template:
       src: "{{ lookup('first_found', zone_statement) }}"
       dest: "{{ confpath }}/{{ item.name }}.zone.conf"
