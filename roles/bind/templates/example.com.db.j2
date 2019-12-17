@@ -1,0 +1,23 @@
+; Primary Zone file template
+$TTL {{ default_ttl }}
+@       IN      SOA     ns1 {{ soa_root_email }}.  (
+                                      {{ soa_values.serial }}
+                                      {{ soa_values.refresh }}
+                                      {{ soa_values.retry }}
+                                      {{ soa_values.expire }}
+                                      {{ soa_values.minimum }} )
+; Name server records for this zone. ****Note not fully qualified****
+@               IN      NS      ns1
+@               IN      NS      ns2
+@               IN      NS      ns3
+@               IN      NS      ns4
+; MX record for this zone
+@               IN      MX      mail
+
+; Address records go here
+ns1             IN      A      127.0.0.1
+ns2             IN      A      127.0.0.2
+ns3             IN      A      127.0.0.3
+ns4             IN      A      127.0.0.4
+
+mail            IN      AAAA   fd01:1:1:1::100
