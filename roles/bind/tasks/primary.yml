@@ -20,6 +20,7 @@
       group: "{{ binduser }}"
       mode: 0660
     loop: "{{ pri_domains }}"
+    loop_control:
       loop_var: domain
 
   - name: Copy Zone statement files for dynamic primary domains
