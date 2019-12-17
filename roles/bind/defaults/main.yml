@@ -46,9 +46,6 @@
     expire: 604800
     minimum: 86400
   pri_domains:
-    - example.net:
-        isstatic: no
-    - example.info:
-        isstatic: no
-    - example.com:
-        isstatic: yes
+    - { name: 'example.net', isstatic: 'no' }
+    - { name: 'example.info', isstatic: 'no' }
+    - { name: 'example.com', isstatic: 'yes' }

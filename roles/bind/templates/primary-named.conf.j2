@@ -97,7 +97,7 @@ controls {
 // Dynamically updated zones go here
 
 {% for domain in pri_domains %}
-include "{{ confpath }}/{{ domain }}.zone.conf";
+include "{{ confpath }}/{{ domain.name }}.zone.conf";
 {% endfor %}
 //..................................
 // Static (manually updated) zones go here
