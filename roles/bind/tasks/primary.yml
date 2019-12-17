@@ -31,9 +31,6 @@
     notify: reload isc-bind scl
     register: zone_changes
 
-  - debug:
-      msg: "item.item={{item.item}}, item.changed={{item.changed}}"
-    loop: "{{ zone_changes.results}}"
 
   - name: Static Zone file changes will cause new serial to be written
     template:
@@ -47,6 +44,7 @@
     loop: "{{ zone_changes.results}}"
     loop_control:
       loop_var: domain
+      label: domain.item.name
 
 
   - name: Copy Zone statement files for dynamic primary domains
