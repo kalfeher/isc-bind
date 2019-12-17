@@ -15,7 +15,7 @@
     template:
       src: "{{ lookup('first_found', [ {{ domain }}.db.j2, primary.db.j2] ) }}"
       dest: "{{ datapath }}/pri/{{ domain }}/{{ domain }}.db"
-      force: {{ domain.isstatic }}
+      force: "{{ domain.isstatic }}"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0660
