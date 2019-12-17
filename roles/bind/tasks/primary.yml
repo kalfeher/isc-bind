@@ -30,6 +30,7 @@
     loop: "{{ pri_domains }}"
     notify: reload isc-bind scl
     register: zone_changes
+    
   - name: what just changed
     debug: zone_changes
 
