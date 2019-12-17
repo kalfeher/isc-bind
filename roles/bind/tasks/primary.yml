@@ -12,7 +12,7 @@
     loop: "{{ pri_domains }}"
 
 
-  - name: Add dynamic Primary domain zone files if not present
+  - name: Add Primary domain zone files if not present
     template:
       src: "{{ lookup('first_found', zone_files ) }}"
       dest: "{{ datapath }}/pri/{{ item.name }}/{{ item.name }}.db"
@@ -28,6 +28,7 @@
         paths:
           - 'templates'
     loop: "{{ pri_domains }}"
+    notify: reload isc-bind scl
 
 
   - name: Copy Zone statement files for dynamic primary domains
@@ -46,3 +47,4 @@
         paths:
           - 'templates'
     loop: "{{ pri_domains }}"
+    notify: reconfig isc-bind scl
