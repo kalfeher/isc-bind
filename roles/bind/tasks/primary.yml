@@ -43,7 +43,7 @@
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0660
-    when: "{{ item.changed == true }}"
+    when: "{{ domain.changed == true }}"
     loop: "{{ zone_changes.results}}"
     loop_control:
       loop_var: domain
