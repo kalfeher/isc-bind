@@ -1,0 +1,6 @@
+zone "{{ item.name }}" IN {
+  type primary;
+  file "pri/{{ item.name }}/{{ item.name }}.db";
+  allow-query { any; };
+  key-directory "pri/{{ item.name }}/keys";
+};
