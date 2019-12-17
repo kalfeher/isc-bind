@@ -31,16 +31,18 @@
     notify: reload isc-bind scl
     register: zone_changes
 
-  - name: what just changed
-    debug: var=zone_changes
-
   - debug:
       msg: "item.item={{item.item}}, item.changed={{item.changed}}"
     loop: "{{ zone_changes.results}}"
 
-  - name: did something change?
-    debug:
-      msg: "Something appears to have changed - {{ item }}"
+  - name: Static Zone file changes will cause new serial to be written
+    template:
+      src: serial.j2
+      dest: "{{ datapath }}/pri/{{ item.name }}/{{ item.name }}.serial"
+      force: yes
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0660
     when: "{{ item.changed == true }}"
     loop: "{{ zone_changes.results}}"
 
