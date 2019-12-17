@@ -25,6 +25,8 @@
         files:
           - "{{ item.name }}.db.j2"
           - primary.db.j2
+        paths:
+          - 'templates'
     loop: "{{ pri_domains }}"
 
 
@@ -41,4 +43,6 @@
         files:
           - "{{ item.name }}.zone.j2"
           - local_signed_zone.j2
+        paths:
+          - 'templates'
     loop: "{{ pri_domains }}"
