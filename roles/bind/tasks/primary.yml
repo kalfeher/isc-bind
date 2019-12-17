@@ -4,12 +4,14 @@
 
   - name: Add per domain directory for Primary zones. including keys dir.
     file:
-      path: "{{ datapath }}/pri/{{ item }}/keys"
+      path: "{{ datapath }}/pri/{{ item.name }}/keys"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0770
     loop: "{{ pri_domains }}"
+    loop_control:
+      label: "{{ item.name }}"
 
   - name: Add dynamic Primary domain zone files if not present
     template:
