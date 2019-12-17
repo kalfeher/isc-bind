@@ -1,8 +1,8 @@
-zone "{{ domain }}" IN {
+zone "{{ item.name }}" IN {
   type primary;
-  file "pri/{{ domain }}/{{ domain }}.db";
+  file "pri/{{ item.name }}/{{ item.name }}.db";
   //also-notify ;
   allow-query { any; };
   update-policy local;
-  key-directory "pri/{{ domain }}/keys";
+  key-directory "pri/{{ item.name }}/keys";
 };
