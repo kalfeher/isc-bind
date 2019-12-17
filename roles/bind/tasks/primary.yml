@@ -29,6 +29,15 @@
           - 'templates'
     loop: "{{ pri_domains }}"
     notify: reload isc-bind scl
+    register: zone_changes
+  - name: what just changed
+    debug: zone_changes
+
+  - name: did something change?
+    debug:
+      msg: "Something appears to have changed - {{ item }}"
+    when: "{{ item.changed == true }}"
+    loop: "{{ zone_changes.results}}"
 
 
   - name: Copy Zone statement files for dynamic primary domains
