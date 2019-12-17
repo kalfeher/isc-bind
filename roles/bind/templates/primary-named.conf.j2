@@ -94,12 +94,7 @@ include "{{ confpath }}/rndc.key";
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; ::1/128; } keys { "rndc-key"; };
 };
-// Dynamically updated zones go here
 
 {% for domain in pri_domains %}
 include "{{ confpath }}/{{ domain.name }}.zone.conf";
 {% endfor %}
-//..................................
-// Static (manually updated) zones go here
-
-//..................................
