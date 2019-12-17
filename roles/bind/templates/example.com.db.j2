@@ -1,12 +1,6 @@
 ; Primary Zone file template
 $TTL {{ default_ttl }}
-/*
-@       IN      SOA     ns1 {{ soa_root_email }}.  (
 
-                                      {{ soa_values.refresh }}
-                                      {{ soa_values.retry }}
-                                      {{ soa_values.expire }}
-                                      {{ soa_values.minimum }} )*/
 $INCLUDE {{ item.name }}.serial
 ; Name server records for this zone. ****Note not fully qualified****
 @               IN      NS      ns1
