@@ -1,7 +1,7 @@
 ; Primary Zone file template
 $TTL {{ default_ttl }}
 
-$INCLUDE {{ item.name }}.serial
+$INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
 ; Name server records for this zone. ****Note not fully qualified****
 @               IN      NS      ns1
 @               IN      NS      ns2
