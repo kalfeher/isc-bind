@@ -30,9 +30,13 @@
     loop: "{{ pri_domains }}"
     notify: reload isc-bind scl
     register: zone_changes
-    
-  - name: what just changed
-    debug: zone_changes
+
+  #- name: what just changed
+  #  debug: var=zone_changes
+
+  - debug:
+      msg: "item.item={{item.item}}, item.stdout={{item.stdout}}, item.changed={{item.changed}}"
+    loop: "{{ zone_changes.results}}"
 
   - name: did something change?
     debug:
