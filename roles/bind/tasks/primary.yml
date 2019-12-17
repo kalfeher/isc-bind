@@ -45,6 +45,7 @@
       mode: 0660
     when: "{{ item.changed == true }}"
     loop: "{{ zone_changes.results}}"
+    loop_control:
       loop_var: domain
 
 
