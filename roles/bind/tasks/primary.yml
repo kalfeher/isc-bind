@@ -13,7 +13,7 @@
 
   - name: Add dynamic Primary domain zone files if not present
     template:
-      src: {{ lookup('first_found', [ {{ domain }}.db.j2, primary.db.j2] ) }}
+      src: "{{ lookup('first_found', [ {{ domain }}.db.j2, primary.db.j2] ) }}"
       dest: "{{ datapath }}/pri/{{ domain }}/{{ domain }}.db"
       force: {{ domain.isstatic }}
       owner: "{{ binduser }}"
@@ -24,7 +24,7 @@
 
   - name: Copy Zone statement files for dynamic primary domains
     template:
-      src: {{ lookup('first_found', [ {{ domain }}.zone.j2, local_signed_zone.j2] ) }}
+      src: "{{ lookup('first_found', [ {{ domain }}.zone.j2, local_signed_zone.j2] ) }}"
       dest: "{{ confpath }}/{{ domain }}.zone.conf"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
