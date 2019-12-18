@@ -26,6 +26,7 @@
           - "{{ item.name }}.db.j2"
           - primary.db.j2
         paths:
+          - "{{ zone_file_path }}"
           - 'templates'
     loop: "{{ pri_domains }}"
     notify: reload isc-bind scl
@@ -61,6 +62,7 @@
           - "{{ item.name }}.zone.j2"
           - local_signed_zone.j2
         paths:
+          - "{{ zone_file_path }}"
           - 'templates'
     loop: "{{ pri_domains }}"
     notify: reconfig isc-bind scl
