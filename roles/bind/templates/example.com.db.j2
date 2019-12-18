@@ -1,7 +1,9 @@
 ; Primary Zone file template
+; When creating your own zone file, do not change this section
 $TTL {{ default_ttl }}
-
 $INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
+; Below this point, you can edit as you need.
+
 ; Name server records for this zone. ****Note not fully qualified****
 @               IN      NS      ns1
 @               IN      NS      ns2
@@ -15,6 +17,6 @@ ns1             IN      A      127.0.0.1
 ns2             IN      A      127.0.0.2
 ns3             IN      A      127.0.0.3
 ns4             IN      A      127.0.0.4
-
+; An IPv6 record
 mail            IN      AAAA   fd01:1:1:1::100
 @               IN      TXT     "This is a text record at the apex"
