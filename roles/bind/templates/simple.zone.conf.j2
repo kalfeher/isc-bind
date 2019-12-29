@@ -3,6 +3,8 @@ zone "{{ item.name }}" IN {
   file "pri/{{ item.name }}/{{ item.name }}.db";
   //also-notify ;
   allow-query { any; };
+  {% if not item.isstatic %}
   update-policy local;
+  {% endif %}
   key-directory "pri/{{ item.name }}/keys";
 };

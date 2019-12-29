@@ -60,7 +60,7 @@
       zone_statement:
         files:
           - "{{ item.name }}.zone.j2"
-          - local_signed_zone.j2
+          - simple.zone.j2
         paths:
           - "{{ zone_file_path }}"
           - 'templates'
