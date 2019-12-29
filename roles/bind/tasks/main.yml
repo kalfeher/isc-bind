@@ -21,7 +21,7 @@
     file:
       path: "{{ logpath }}"
       state: directory
-      user: "{{ binduser }}"
+      owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0770
 
@@ -47,7 +47,7 @@
       src: "{{ lookup('first_found', configuration_file) }}"
       # src: "{{ ServerRole }}-named.conf.j2"
       dest: "{{ confpath }}/named.conf"
-      user: "{{ binduser }}"
+      owner: "{{ binduser }}"
       group: "{{ binduser }}"
       backup: yes
     vars:
