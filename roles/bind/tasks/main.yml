@@ -51,7 +51,7 @@
     vars:
       configuration_file:
         files:
-          - {{ ServerRole }}-named.conf.j2
+          - "{{ ServerRole }}-named.conf.j2"
           - named.conf
         paths:
           - "{{ conf_file_path }}"
