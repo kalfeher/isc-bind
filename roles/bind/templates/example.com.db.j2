@@ -20,3 +20,7 @@ ns4             IN      A      127.0.0.4
 ; An IPv6 record
 mail            IN      AAAA   fd01:1:1:1::100
 @               IN      TXT     "This is a text record at the apex"
+
+; Restrict who can allocate certificates to this domain
+{{ item.name }}.    IN      CAA 0 iodef "mailto:{{ contact_email_certs }}"
+{{ item.name }}.		IN      CAA	0 issue "letsencrypt.org"
