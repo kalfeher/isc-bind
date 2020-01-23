@@ -1,0 +1,33 @@
+; Parked domain zone file template
+; When creating your own zone file, do not change this section
+$TTL {{ default_ttl }}
+$INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
+; Below this point, you can edit as you need.
+; Name servers. Note not fully qualified!
+@               IN      NS      ns1
+@               IN      NS      ns2
+@               IN      NS      ns3
+@               IN      NS      ns4
+
+ns1             IN      A      127.0.0.1
+ns2             IN      A      127.0.0.2
+ns3             IN      A      127.0.0.3
+ns4             IN      A      127.0.0.4
+; These entries follow the guidelines found here: https://www.m3aawg.org/sites/default/files/m3aawg_parked_domains_bp-2015-12.pdf
+; SPF entries
+{{ item.name }}.              TXT  "v=spf1 -all"
+*.{{ item.name }}.            TXT  "v=spf1 -all"
+; DKIM
+*._domainkey.{{ item.name }}  TXT "v=DKIM1; p="
+*.{{ item.name }}.            TXT "v=DKIM1; p="
+; DMARC
+; simple record per domain. Single email is used for both contacts.
+_dmarc.{{ item.name }}.       TXT "v=DMARC1; p=reject; rua=mailto:{{ contact_email_dmarc }}; ruf=mailto:{{ contact_email_dmarc }};"
+; A common central record example is included in comments below:
+;_dmarc.{{ item.name }}.  CNAME _dmarc.parked.example.net.
+
+; NULL MX record
+*.{{ item.name }}.  MX  0.
+; Restrict who can allocate certificates to this domain
+{{ item.name }}.    IN      CAA 0 iodef "mailto:{{ contact_email_certs }}"
+{{ item.name }}.		IN      CAA	0 issue "letsencrypt.org"

@@ -1,3 +1,4 @@
 ---
   soa_root_email: root.example.com # Primary server operator's public email. do not use '@'
-  
+  contact_email_dmarc: root@example.com # used for DMARC contact
+  contact_email_certs: certs@example.com
