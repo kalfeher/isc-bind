@@ -1,4 +1,5 @@
-; Parked domain zone file template
+; Example Parked domain zone file template
+; You are only likely to need to change the NS records, A/AAAA records for a forwarding service and possibly a WWW CNAME record.
 ; When creating your own zone file, do not change this section
 $TTL {{ default_ttl }}
 $INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
