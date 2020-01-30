@@ -3,7 +3,7 @@ zone "{{ item.name }}" IN {
   file "pri/{{ item.name }}/{{ item.name }}.db";
   //also-notify ;
   allow-query { any; };
-  {% if not item.isstatic %}
+  {% if item.isstatic == 'no' %}
   update-policy local;
     {% if item.dnssec_policy %}
   dnssec_policy "{{ item.dnssec_policy }}";
