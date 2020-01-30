@@ -95,7 +95,25 @@ controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
+/* Add any DNSSEC policies here. Directories must exist and be writable for BIND process*/
+dnssec-policy default {
+  dnskey-ttl 3600;
+  keys {
+      ksk key-directory lifetime P6M algorithm 13;
+      zsk key-directory lifetime P2M algorithm 13;
+  };
+  parent-ds-ttl P1D;
+  parent-propogation-delay PT1H;
+  parent-registration-delay P1D;
+  publish-safety PT4H;
+  retire-safety PT4H;
+  signatures-refresh P7D;
+  signatures-validity P4W;
+  signatures-validity-dnskey P4W;
+  zone-max-ttl PT48H;
+  zone-propagation-delay PT1H;
 
+};
 {% for domain in pri_domains %}
 include "{{ confpath }}/{{ domain.name }}.zone.conf";
 {% endfor %}

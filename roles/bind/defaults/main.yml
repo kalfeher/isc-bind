@@ -49,5 +49,5 @@
   conf_file_path: 'templates' # the path to find templated config files. Will not be used for per - zone configs.
   pri_domains:
     - { name: 'example.net', isstatic: 'no' }
-    - { name: 'example.info', isstatic: 'no' }
+    - { name: 'example.info', isstatic: 'no', dnssec-policy: 'default' }
     - { name: 'example.com', isstatic: 'yes' }

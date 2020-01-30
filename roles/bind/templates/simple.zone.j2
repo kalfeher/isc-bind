@@ -5,6 +5,9 @@ zone "{{ item.name }}" IN {
   allow-query { any; };
   {% if not item.isstatic %}
   update-policy local;
+    {% if item.dnssec_policy %}
+  dnssec_policy "{{ item.dnssec_policy }}";
+    {% endif %}
   {% endif %}
   key-directory "pri/{{ item.name }}/keys";
 };
