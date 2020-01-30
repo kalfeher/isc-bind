@@ -6,7 +6,7 @@ zone "{{ item.name }}" IN {
   {% if item.isstatic == 'no' %}
   update-policy local;
     {% if item.dnssec_policy %}
-  dnssec_policy "{{ item.dnssec_policy }}";
+  dnssec-policy "{{ item.dnssec_policy }}";
     {% endif %}
   {% endif %}
   key-directory "pri/{{ item.name }}/keys";
