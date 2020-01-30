@@ -37,6 +37,7 @@ options {
   recursion no;
   minimal-any yes;
   minimal-responses yes;
+  dnssec-update-mode maintain;
   serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
   zone-statistics full;
   allow-transfer {
