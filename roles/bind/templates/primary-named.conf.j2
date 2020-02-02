@@ -97,7 +97,7 @@ controls {
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
 /* Add any DNSSEC policies here. Directories must exist and be writable for BIND process*/
-dnssec-policy simple {
+dnssec-policy "simple" {
   dnskey-ttl 3600;
   keys {
       ksk key-directory lifetime P6M algorithm 13;
