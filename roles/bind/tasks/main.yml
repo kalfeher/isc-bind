@@ -54,7 +54,7 @@
       configuration_file:
         files:
           - "{{ ServerRole }}-named.conf.j2"
-          - named.conf
+          - named.conf.j2
         paths:
           - "{{ conf_file_path }}"
           - 'templates'
