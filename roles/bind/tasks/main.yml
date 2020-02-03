@@ -76,3 +76,11 @@
       immediate: yes
       zone: "{{ firewalldZone }}"
     when: ListenV4 != '' or ListenV6 != ''
+  - name: Add Statistics channels rules to FirewallD
+    firewalld:
+      port: 8880/tcp
+      permanent: yes
+      state: enabled
+      immediate: yes
+      zone: "{{ firewalldZone }}"
+    when: ListenStatsV4 != '' or ListenStatsV6 != ''
