@@ -1,7 +1,7 @@
 ---
   # firewalld zone which will allow DNS through
   firewalldZone: "public"
-  
+
   waitfornetmgr:
     - { option: 'After', value: 'network-online.target' }
     - { option: 'Wants', value: 'network-online.target' }
@@ -51,6 +51,6 @@
   zone_file_path: 'templates' # the path to find zone files. Having them outside of the role will prevent role upgrade issues. Also used for per - zone zone statement files.
   conf_file_path: 'templates' # the path to find templated config files. Will not be used for per - zone configs.
   pri_domains:
-    - { name: 'example.net', isstatic: 'no' }
-    - { name: 'example.info', isstatic: 'no', dnssec-policy: 'default' }
-    - { name: 'example.com', isstatic: 'yes' }
+    - { name: 'example.net', zonetype: 'dyn' }
+    - { name: 'example.info', zonetype: 'dyn', dnssec-policy: 'default' }
+    - { name: 'example.com', zonetype: 'static' }

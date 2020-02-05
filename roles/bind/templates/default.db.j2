@@ -1,0 +1,26 @@
+; Primary Zone file template for static zones
+; When creating your own zone file, do not change this section
+$TTL {{ default_ttl }}
+$INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
+; Below this point, you can edit as you need.
+
+; Name server records for this zone. ****Note not fully qualified****
+@               IN      NS      ns1
+@               IN      NS      ns2
+@               IN      NS      ns3
+@               IN      NS      ns4
+; MX record for this zone
+@               IN      MX   10 mail
+
+; Address records go here
+ns1             IN      A      127.0.0.1
+ns2             IN      A      127.0.0.2
+ns3             IN      A      127.0.0.3
+ns4             IN      A      127.0.0.4
+; An IPv6 record
+mail            IN      AAAA   fd01:1:1:1::100
+@               IN      TXT     "This is a text record at the apex of {{ item.name }}"
+
+; Restrict who can allocate certificates to this domain
+{{ item.name }}.    IN      CAA 0 iodef "mailto:{{ contact_email_certs }}"
+{{ item.name }}.		IN      CAA	0 issue "letsencrypt.org"

@@ -16,7 +16,7 @@
     template:
       src: "{{ lookup('first_found', zone_files ) }}"
       dest: "{{ datapath }}/pri/{{ item.name }}/{{ item.name }}.db"
-      force: "{{ item.isstatic }}"
+      force: "{{ 'yes' if item.zonetype == 'static' else 'no' }}"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0660
@@ -24,7 +24,8 @@
       zone_files:
         files:
           - "{{ item.name }}.db.j2"
-          - primary.db.j2
+          - "{{ item.zonetype }}.db.j2"
+          - default.db.j2
         paths:
           - "{{ zone_file_path }}"
           - 'templates'
