@@ -1,0 +1,12 @@
+---
+  - name: Load Recursive specific vars
+    include_vars: recursive.yml
+  - name: Add bind keys if required. These will only be used the first time BIND starts
+    copy:
+      src: files/bind.keys.v9_11
+      dest: {{ datapath }}/bind.keys
+      owner: {{ binduser }}
+      group: {{ binduser }}
+      mode: '0644'
+    when: key_file == yes
+  # Review README for validating the file above

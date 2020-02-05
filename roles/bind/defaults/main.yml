@@ -1,6 +1,7 @@
 ---
   # firewalld zone which will allow DNS through
   firewalldZone: "public"
+  
   waitfornetmgr:
     - { option: 'After', value: 'network-online.target' }
     - { option: 'Wants', value: 'network-online.target' }

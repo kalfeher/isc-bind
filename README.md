@@ -11,6 +11,8 @@ A recursive server requires no additional variables.
 A basic recursive configuration file will be added to BIND.
 If either {{ListenrndcV4}} or {{ListenrndcV6}} are not empty, then a rule will be added to firewalld allowing DNS inbound on the public zone:  {{firewalldZone}}.
 
+A bind.keys file will be provided unless `key_file: "no"` (default is yes). This provides a method for BIND to prime its trust anchors. If the file is not provided, BIND will use its internal trust anchors. The file will only ever be used the first time BIND runs. An internet connected host should validate this file (within the `files` directory in the role ), prior to executing this role in a playbook. Signatures can be found here: https://downloads.isc.org/isc/bind9/keys/9.11/
+
 ### serverrole: primary
 A primary server (authoritative) that can host either dynamically or statically updated zones. The default is for zones to be locally dynamic and signed.
 Statically managed zones will need a template for the zone file and the zone statement for BIND's configuration file. An example of a statically managed zone (example.com) is included.
@@ -56,3 +58,6 @@ There are two variables which will make updating the role much simpler.
 `{{conf_file_path}}` should only be set if you are very familiar with BIND configuration. This will allow you to specify the location of configuration files which will not be replaced if the role is updated.
 
 `{{zone_file_path}}` should be set for any host with the _primary_ `{{serverrole}}`. This will allow you to specifiy a location for zone files and zone statement files which will not be replaced.
+
+## Workarounds
+During testing, BIND occasionally failed to listen to all its configured interfaces on boot up. This was due to Network Manager having not completed interface configuration, prior to BIND starting. The role will update the standard service file to wait for network manager to finish, before starting bind. This issue has been logged (https://gitlab.isc.org/isc-projects/bind9/issues/1594) and the workaround may be removed or altered based on how it is resolved by ISC.

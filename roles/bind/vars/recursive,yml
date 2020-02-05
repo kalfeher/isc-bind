@@ -1,0 +1,2 @@
+---
+  key_file: "yes" # should the bind.keys file be copied to the server for initial trust anchor priming? This is useful if server will be offline or air-gapped at initial install.
