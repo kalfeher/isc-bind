@@ -61,6 +61,15 @@
     tags: isc-bind
     notify: reconfig isc-bind scl
 
+  - name: Adjust service file to wait for Network Manager
+    ini_file:
+      dest: "{{ serviceFile }}"
+      section: Unit
+      option: "{{ item.option }}"
+      value: "{{ item.value }}"
+    loop: "{{ waitfornetmgr }}"
+    notify: restart isc-bind
+
   - name: Start BIND
     service:
       name: isc-bind-named

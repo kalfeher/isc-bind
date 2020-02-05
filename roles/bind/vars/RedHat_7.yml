@@ -1,3 +1,4 @@
 ---
     confpath: /etc/opt/isc/isc-bind
     datapath: /var/opt/isc/isc-bind/named/data
+    serviceFile: /usr/lib/systemd/system/isc-bind-named.service

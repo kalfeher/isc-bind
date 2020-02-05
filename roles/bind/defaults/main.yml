@@ -1,7 +1,9 @@
 ---
   # firewalld zone which will allow DNS through
   firewalldZone: "public"
-
+  waitfornetmgr:
+    - { option: 'After', value: 'network-online.target' }
+    - { option: 'Wants', value: 'network-online.target' }
   # options: recursive, primary, secondary
   ServerRole: recursive
   # Directories and files will be set to allow this user read and write access as required
