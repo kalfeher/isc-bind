@@ -24,6 +24,12 @@ options {
 		trusted;
 		clients;
 	};
+  /* This dnstap configuration is designed to assist with client troubleshooting.*/
+  dnstap {
+    client; #all client traffic
+    resolver query; #server's outbound queries.
+  };
+  dnstap-output file "{{ logpath }}/dnstap-output" size 100M versions 5 suffix timestamp;
 	zone-statistics full;
 	deny-answer-addresses { {{ re_bind_IP_ACL }} }
 		{% if re_bind_IP_exception %}

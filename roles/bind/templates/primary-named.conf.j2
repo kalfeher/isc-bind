@@ -39,6 +39,11 @@ options {
   minimal-responses yes;
   dnssec-update-mode maintain;
   serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
+  /* This dnstap configuration is designed to assist with server troubleshooting.*/
+  dnstap {
+    auth;
+  };
+  dnstap-output file "{{ logpath }}/dnstap-output" size 100M versions 5 suffix timestamp;
   zone-statistics full;
   allow-transfer {
     trusted;
