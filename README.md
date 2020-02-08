@@ -25,14 +25,16 @@ An example zone file (`example.com.db.j2`) is included in the templates director
 Zone files for domains within the `{{pri_domains}}` variable will be searched in the following order, with the first match used:
 1. _domain_.db.j2 within the path specified by `{{ zone_file_path }}`
 2. _domain_.db.j2 within the `templates` directory
-3. primary.db.j2 within the path specified by `{{ zone_file_path }}`
-4. primary.db.j2 within the `templates` directory
+3. _zonetype_.db.j2 within the path specified by `{{ zone_file_path }}`
+4. _zonetype_.db.j2 within the `templates` directory
+
+**Although the defaults within the provided _zonetype_.db.j2 files have been carefully considered, it is highly recommended that you use explicitly configured zone files.**
 
 #### Static and Dynamic Zones
 In order for this role to behave in an idempotent manner, dynamic zones are only managed for presence, not the content within the zone file.
-The dictionary for each domain in `{{pri_domains}}` contains the variable *isstatic* which defines whether the domain will be updated dynamically via DNS TSIG (`isstatic:false`) or via changes to the file deployed by Ansible ('isstatic:true').
+The dictionary for each domain in `{{pri_domains}}` contains the variable *zonetype* which defines whether the domain will be updated dynamically via DNS TSIG (`zonetype:dyn`) or via changes to the file deployed by Ansible ('zonetype:static').
 
-The role will only update static zone files, after initially checking that all zone files are present. This is to avoid changes in a template from triggering the replacement of a dynamically updated zone file. Since static zone files are always overwritten on change when the playbook is run, it makes sense to keep the serial (which is a unix epoc timestamp) in a seperate file, otherwise any playbook run will result in an apparent change and BIND reload. Therefore static zone files must use have the following entry for their SOA (the template `example.com.db.j2` can be copied and used for this purpose.):
+The role will only update static zone files, after initially checking that all zone files are present. This is to avoid changes in a template from triggering the replacement of a dynamically updated zone file. Since static zone files are always overwritten on change when the playbook is run, it makes sense to keep the serial (which is a unix epoc timestamp) in a seperate file, otherwise any playbook run will result in an apparent change and BIND reload. Therefore static zone files must have the following entry for their SOA (the template `example.com.db.j2` can be copied and used for this purpose.):
 
 ~~~
 $INCLUDE pri/{{ item.name }}/{{ item.name }}.serial
