@@ -88,7 +88,7 @@ logging {
 	category update { update_log; };
 };
 statistics-channels {
-	inet 127.0.0.1 port 8880 allow {trusted;};
+	/* inet 127.0.0.1 port 8880 allow {trusted;}; */
 	{% if ListenStatsV4 %}
 	inet {{ ListenStatsV4 }} port 8880 allow {trusted;};
 	{% endif %}

@@ -70,13 +70,6 @@
     loop: "{{ waitfornetmgr }}"
     notify: restart isc-bind
 
-  - name: Start BIND
-    service:
-      name: isc-bind-named
-      state: started
-      enabled: yes
-    tags: isc-bind
-
   - name: Make sure FirewallD allows DNS through (UDP amd TCP)
     firewalld:
       service: dns
@@ -85,7 +78,7 @@
       immediate: yes
       zone: "{{ firewalldZone }}"
     when: ListenV4 != '' or ListenV6 != ''
-  - name: Add Statistics channels rules to FirewallD
+  - name: Add Statistics channels rules to FirewallD. **This channel is plain HTTP!!**
     firewalld:
       port: 8880/tcp
       permanent: yes
@@ -93,3 +86,17 @@
       immediate: yes
       zone: "{{ firewalldZone }}"
     when: ListenStatsV4 != '' or ListenStatsV6 != ''
+
+  - name: Allow isc-bind to use listen to port 8880 for statistics
+    seboolean:
+      name: nis_enabled
+      state: yes
+      persistent: yes
+    when: ListenStatsV4 != '' or ListenStatsV6 != ''
+
+  - name: Start BIND
+    service:
+      name: isc-bind-named
+      state: started
+      enabled: yes
+    tags: isc-bind
