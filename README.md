@@ -9,7 +9,7 @@ Configuration templates will depend on the `ServerRole`.
 ### `ServerRole`: recursive
 A recursive server requires no additional variables.
 A basic recursive configuration file will be added to BIND.
-If either `{{ListenrndcV4}}` or `{{ListenrndcV6}}` are not empty, then a rule will be added to firewalld allowing DNS inbound on the public zone:  {{firewalldZone}}.
+If either `{{ListenrndcV4}}` or `{{ListenrndcV6}}` are not empty, then a rule will be added to firewalld allowing DNS inbound on the public zone:  `{{firewalldZone}}`.
 
 A bind.keys file will be provided unless `key_file: "no"` (default is yes). This provides a method for BIND to prime its trust anchors. If the file is not provided, BIND will use its internal trust anchors. The file will only ever be used the first time BIND runs. An internet connected host should validate this file (within the `files` directory in the role ), prior to executing this role in a playbook. Signatures can be found here: https://downloads.isc.org/isc/bind9/keys/9.11/
 
@@ -32,7 +32,7 @@ Zone files for domains within the `{{pri_domains}}` variable will be searched in
 
 #### Static and Dynamic Zones
 In order for this role to behave in an idempotent manner, dynamic zones are only managed for presence, not the content within the zone file.
-The dictionary for each domain in `{{pri_domains}}` contains the variable *zonetype* which defines whether the domain will be updated dynamically via DNS TSIG (`zonetype:dyn`) or via changes to the file deployed by Ansible ('zonetype:static').
+The dictionary for each domain in `{{pri_domains}}` contains the variable *zonetype* which defines whether the domain will be updated dynamically via DNS TSIG (`zonetype:dyn`) or via changes to the file deployed by Ansible (`zonetype:static`).
 
 The role will only update static zone files, after initially checking that all zone files are present. This is to avoid changes in a template from triggering the replacement of a dynamically updated zone file. Since static zone files are always overwritten on change when the playbook is run, it makes sense to keep the serial (which is a unix epoc timestamp) in a seperate file, otherwise any playbook run will result in an apparent change and BIND reload. Therefore static zone files must have the following entry for their SOA (the template `example.com.db.j2` can be copied and used for this purpose.):
 
@@ -59,9 +59,9 @@ Add the following lines to `requirements.yml` :
 There are two variables which will make updating the role much simpler.
 `{{conf_file_path}}` should only be set if you are very familiar with BIND configuration. This will allow you to specify the location of configuration files which will not be replaced if the role is updated.
 
-`{{zone_file_path}}` should be set for any host with that sets _primary_ as their `ServerRole`. This will allow you to specify a location for zone files and zone statement files which will not be replaced. You can and should create explicit zone files and place them in the *zone_file_path* directory. You do not need to also create the zone statement files for each domain. If the role defaults are acceptable, leave these out of the *zone_file_path* directory and the role will automatically use the zone statement file in the `templates` directory.
+`{{zone_file_path}}` should be set for any host with that sets _primary_ as their `ServerRole`. This will allow you to specify a location for zone files and zone statement files which will not be replaced. You can and should create explicit zone files and place them in the `zone_file_path` directory. You do not need to also create the zone statement files for each domain. If the role defaults are acceptable, leave these out of the `zone_file_path` directory and the role will automatically use the zone statement file in the `templates` directory.
 
 ## Workarounds
 During testing, BIND occasionally failed to listen to all its configured interfaces on boot up. This was due to Network Manager having not completed interface configuration, prior to BIND starting. The role will update the standard service file to wait for network manager to finish, before starting bind. This issue has been logged (https://gitlab.isc.org/isc-projects/bind9/issues/1594) and the workaround may be removed or altered based on how it is resolved by ISC.
 
-The **dnssec-policy** feature has flaws that make it unusable in BIND 9.15.8. This feature should not be used (its currently only in-dev) and is known not to work. A fix has been create by ISC and this entry will be updated once that fix is released in any of the copr isc=bind releases. 
+The **dnssec-policy** feature has flaws that make it unusable in BIND 9.15.8. This feature should not be used (its currently only in-dev) and is known not to work. A fix has been create by ISC and this entry will be updated once that fix is released in any of the copr isc=bind releases.
