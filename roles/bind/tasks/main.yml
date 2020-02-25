@@ -42,6 +42,10 @@
     include_tasks: primary.yml
     when: ServerRole == 'primary'
 
+  - name: Recursive Server configuration
+    include_tasks: recursive.yml
+    when: ServerRole == 'recursive'
+
   - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ lookup('first_found', configuration_file) }}"
