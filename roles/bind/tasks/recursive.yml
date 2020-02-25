@@ -10,3 +10,29 @@
       mode: '0644'
     when: key_file == yes
   # Review README for validating the file above
+  - name: Add directory for RPZ zone files.
+    file:
+      path: "{{ datapath }}/rpz"
+      state: directory
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
+  - name: Copy RPZ zone files
+    template:
+      src: "{{ lookup('first_found', rpz_source) }}"
+      dest: "{{ datapath }}/rpz/{{ item.name }}.db"
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      backup: yes
+      mode: 0660
+    vars:
+      rpz_source:
+        files:
+          - "{{ item.name }}.db.j2"
+          - simple.zone.j2
+        paths:
+          - "{{ zone_file_path }}"
+          - 'templates'
+    loop: "{{ rpz_policies }}"
+    when: rpz_policies is defined
+    notify: reconfig isc-bind scl

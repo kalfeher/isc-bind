@@ -36,6 +36,7 @@
   re_bind_IP_exception: "" # "example.com"; "example.net". Add domains which may answer with internal IPs.
   re_bind_name_List: "" # "example.com"; "example.net";. Domains which should not be cname'd
   re_bind_name_exceptions: "" # "example.com"; "example.net". domains which can return cnames to the list above (often the same).
+  
   xfer_clients: "" # List of clients allowed to xfr "192.168.0.1; 192.168.10.11; 10.0.20.11; fd01:2:2:2::1;"
   rndc_add_zone: "no" # change to yes to dynamically add zones.
   primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
@@ -52,5 +53,6 @@
   conf_file_path: 'templates' # the path to find templated config files. Will not be used for per - zone configs.
   pri_domains:
     - { name: 'example.net', zonetype: 'dyn' }
-    - { name: 'example.info', zonetype: 'dyn', dnssec-policy: 'default' }
+    # - { name: 'example.info', zonetype: 'dyn', dnssec-policy: 'default' }
     - { name: 'example.com', zonetype: 'static' }
+  rpz_soa_values: "{{ soa_values }}"

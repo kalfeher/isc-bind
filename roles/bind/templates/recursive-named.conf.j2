@@ -43,6 +43,13 @@ options {
 		{% endif %}
 	;
 	{% endif %}
+  ; RPZ configuration
+  {% if rpz_policies is defined %}
+  {% for policy in rpz_policies %}
+  response-policy { zone "{{ policy }}"; };
+  {% endfor %}
+  {% endif %}
+
 };
 
 logging {
@@ -98,3 +105,10 @@ controls {
   inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
+{% if rpz_policies is defined %}
+; Allowing localhost to query policies.
+; Edit named.conf.j2 template if you do not wish to allow this.
+{% for policy in rpz_policies %}
+zone "{{ policy }}" { type master; file "rpz/{{ policy }}.db"; allow-query { localhost; }; };
+{% endfor %}
+{% endif %}

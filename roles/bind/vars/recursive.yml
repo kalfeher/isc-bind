@@ -1,2 +1,14 @@
 ---
   key_file: "yes"
+  rpz_soa_contact: "rpz.localhost."
+  rpz_policies:
+    - "basic_rpz"
+  rpz_block_domains:
+    - "xxx"
+    - "sex"
+    - "adult"
+    - "evil.example.net"
+  #rpz_block_ns_label:
+  #  - "ns1.evil.example.net"
+  #rpz_block_ns_ip:
+  #  - "32.5.0.0.127"

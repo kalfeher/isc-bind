@@ -1,0 +1,31 @@
+; Simple RPZ file that can be used as a guide.
+$TTL  1H
+@       SOA LOCALHOST. {{ rpz_soa_contact }} (
+                                      {{ soa_values.serial }}
+                                      {{ soa_values.refresh }}
+                                      {{ soa_values.retry }}
+                                      {{ soa_values.expire }}
+                                      {{ soa_values.minimum }} )
+; Simple block rules for domains you never want resolved
+{% if rpz_block_domains is defined %}
+{% for domain in rpz_block_domains %}
+{{ domain }}        CNAME   .
+*.{{ domain }}      CNAME   .
+{% endfor %}
+{% end if %}
+
+; Known bad name servers should go here:
+; evil-ns.example.info.rpz-nsdname    CNAME    .
+{% if rpz_block_ns_label is defined %}
+{% for ns in rpz_block_ns_label %}
+{{ ns }}.rpz-nsdname        CNAME   .
+{% endfor %}
+{% end if %}
+
+; IP address of known bad name servers go here:
+; 32.1.0.0.127.rpz-nsip      CNAME     .
+{% if rpz_block_ns_ip is defined %}
+{% for ns in rpz_block_ns_label %}
+{{ ns }}.rpz-nsdname        CNAME   .
+{% endfor %}
+{% end if %}
