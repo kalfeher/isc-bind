@@ -61,14 +61,14 @@
     tags: isc-bind
     notify: reconfig isc-bind scl
 
-  - name: Adjust service file to wait for Network Manager
-    ini_file:
-      dest: "{{ serviceFile }}"
-      section: Unit
-      option: "{{ item.option }}"
-      value: "{{ item.value }}"
-    loop: "{{ waitfornetmgr }}"
-    notify: restart isc-bind
+  #- name: Adjust service file to wait for Network Manager
+  #  ini_file:
+  #    dest: "{{ serviceFile }}"
+  #    section: Unit
+  #    option: "{{ item.option }}"
+  #    value: "{{ item.value }}"
+  #  loop: "{{ waitfornetmgr }}"
+  #  notify: restart isc-bind
 
   - name: Make sure FirewallD allows DNS through (UDP amd TCP)
     firewalld:
