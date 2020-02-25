@@ -16,18 +16,19 @@ A bind.keys file will be provided unless `key_file: "no"` (default is yes). This
 #### Response Policy Zones (RPZ)
 A basic RPZ configuration is included for `recursive` servers. If you do not use an RPZ feed and do not want to create a complex policy, you can use the included `basic_rpz` policy. The default policy focuses on blocking domains and nameservers that might host malicious or inappropriate content. It does not contain any client based policies.
 
-To use the default rpz policy add domains to the `{{rpz_block_domains}}` list. _example:_
+To use the default rpz policy add domains to the `{{rpz_block_domains}}` list.
+_For example:_
 ~~~
 rpz_block_domains:
-  - "xxx"
-  - "sex"
-  - "adult"
+  - "xxx" # Included in default variable definition
+  - "sex" # Included in default variable definition
+  - "adult" # Included in default variable definition
   - "evil.example.net"
   - "another.bad.domain.example.info"
 ~~~
 The default rpz policy also allows you to specify nameserver names and nameserver IP addresses that you wish to block from your clients. Use `{{rpz_block_ns_label}}` for nameserver names to be blocked and `{{rpz_block_ns_ip}}` for nameserver IPs to be blocked. Take note of the IP format, which reverses the address and adds the bitmask at the start of the label.
 
-RPZ source files should be named _policy_.db.j2 and will be searched for in the same order as described in **Zone File Naming Syntax**.
+RPZ source files should be named _policy_.db.j2. The script will first search for this file within the path specified by `{{ zone_file_path }}` and then the `templates` directory.
 
 ### `ServerRole`: primary
 A primary server (authoritative) that can host either dynamically or statically updated zones. The default is for zones to be locally dynamic and signed.
