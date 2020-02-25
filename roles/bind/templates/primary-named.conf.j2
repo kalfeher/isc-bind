@@ -102,6 +102,7 @@ controls {
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
 /* Add any DNSSEC policies here. Directories must exist and be writable for BIND process*/
+/* disabling dnssec-policy until more functionality is added.
 dnssec-policy "simple" {
   dnskey-ttl 3600;
   keys {
@@ -120,6 +121,7 @@ dnssec-policy "simple" {
   zone-propagation-delay PT1H;
 
 };
+*/
 {% for domain in pri_domains %}
 include "{{ confpath }}/{{ domain.name }}.zone.conf";
 {% endfor %}
