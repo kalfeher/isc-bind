@@ -8,7 +8,7 @@
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: '0644'
-    when: key_file == yes
+    when: key_file == 'yes'
   # Review README for validating the file above
   - name: Add directory for RPZ zone files.
     file:
