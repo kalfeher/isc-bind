@@ -7,7 +7,7 @@
     - "xxx"
     - "sex"
     - "adult"
-    - "evil.example.net"
+  # - "evil.example.net"
   #rpz_block_ns_label:
   #  - "ns1.evil.example.net"
   #rpz_block_ns_ip:
