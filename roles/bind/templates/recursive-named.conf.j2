@@ -43,7 +43,7 @@ options {
 		{% endif %}
 	;
 	{% endif %}
-  ; RPZ configuration
+/* RPZ configuration */
   {% if rpz_policies is defined %}
   {% for policy in rpz_policies %}
   response-policy { zone "{{ policy }}"; };
@@ -106,8 +106,8 @@ controls {
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
 {% if rpz_policies is defined %}
-; Allowing localhost to query policies.
-; Edit named.conf.j2 template if you do not wish to allow this.
+/* Allowing localhost to query policies.
+   Edit named.conf.j2 template if you do not wish to allow this. */
 {% for policy in rpz_policies %}
 zone "{{ policy }}" { type master; file "rpz/{{ policy }}.db"; allow-query { localhost; }; };
 {% endfor %}

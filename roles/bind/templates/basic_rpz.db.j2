@@ -6,6 +6,7 @@ $TTL  1H
                                       {{ soa_values.retry }}
                                       {{ soa_values.expire }}
                                       {{ soa_values.minimum }} )
+    NS localhost.
 ; Simple block rules for domains you never want resolved
 {% if rpz_block_domains is defined %}
 {% for domain in rpz_block_domains %}
