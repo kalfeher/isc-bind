@@ -5,7 +5,7 @@ zone "{{ item.name }}" IN {
   allow-query { any; };
   {% if item.zonetype == 'dyn' %}
   update-policy local;
-    {% if item.dnssec_policy %}
+    {% if item.dnssec_policy is defined %}
   dnssec-policy "{{ item.dnssec_policy }}";
     {% endif %}
   {% endif %}
