@@ -17,10 +17,11 @@
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0770
+
   - name: Copy RPZ zone files
     template:
       src: "{{ lookup('first_found', rpz_source) }}"
-      dest: "{{ datapath }}/rpz/{{ item.name }}.db"
+      dest: "{{ datapath }}/rpz/{{ item }}.db"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       backup: yes
@@ -28,8 +29,8 @@
     vars:
       rpz_source:
         files:
-          - "{{ item.name }}.db.j2"
-          - simple.zone.j2
+          - "{{ item }}.db.j2"
+          - basic_rpz.db.j2
         paths:
           - "{{ zone_file_path }}"
           - 'templates'
