@@ -3,3 +3,11 @@
     confpathrhel7: /etc/opt/isc/isc-bind
     datapathrhel8: /var/opt/isc/scls/isc-bind/named/data
     datapathrhel7: /var/opt/isc/isc-bind/named/data
+    isc_bind_repository:
+      name: "COPR-ISC-{{ BindRelease }}"
+      description: COPR ISC repo for BIND {{ BindRelease }}
+      baseurl: "https://copr-be.cloud.fedoraproject.org/results/isc/{{ BindRelease }}/epel-{{ ansible_distribution_major_version }}-{{ ansible_userspace_architecture }}/"
+      gpgkey: "https://copr-be.cloud.fedoraproject.org/results/isc/{{ BindRelease }}/pubkey.gpg"
+      gpgcheck: yes
+      skip_if_unavailable: yes
+      comment: "Free and public ISC BIND repository"
