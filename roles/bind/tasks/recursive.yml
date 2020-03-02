@@ -51,3 +51,4 @@
     loop: "{{ zone_changes.results}}"
     loop_control:
       loop_var: policy
+      label: policy.item

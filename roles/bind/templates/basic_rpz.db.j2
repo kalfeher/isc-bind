@@ -1,6 +1,6 @@
 ; Simple RPZ file that can be used as a guide.
 $TTL  1H
-$INCLUDE rpz/{{ policy }}.serial
+$INCLUDE rpz/{{ item }}.serial
     NS localhost.
 ; Simple block rules for domains you never want resolved
 {% if rpz_block_domains is defined %}
