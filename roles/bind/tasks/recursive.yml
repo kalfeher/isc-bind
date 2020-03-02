@@ -42,7 +42,7 @@
   - name: Static Zone file changes will cause new serial to be written
     template:
       src: rpz-serial.j2
-      dest: "{{ datapath }}/rpz/{{ policy }}.serial"
+      dest: "{{ datapath }}/rpz/{{ policy.item }}.serial"
       force: yes
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
