@@ -18,7 +18,7 @@ $INCLUDE rpz/{{ item }}.serial
 {% endfor %}
 {% endif %}
 
-; IP address of known bad name servers go here:
+; IP address blocks of known bad name servers go here:
 ; 32.1.0.0.127.rpz-nsip      CNAME     .
 {% if rpz_block_ns_ip is defined %}
 {% for ns in rpz_block_ns_label %}
