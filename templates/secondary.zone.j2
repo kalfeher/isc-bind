@@ -1,0 +1,6 @@
+zone "{{ item.name }}" IN {
+  type secondary;
+  file "sec/{{ item.name }}/{{ item.name }}.db";
+
+  allow-query { any; };
+};

@@ -42,6 +42,10 @@
     include_tasks: primary.yml
     when: ServerRole == 'primary'
 
+  - name: Secondary Server configuration
+    include_tasks: secondary.yml
+    when: ServerRole == 'secondary'
+
   - name: Recursive Server configuration
     include_tasks: recursive.yml
     when: ServerRole == 'recursive'
@@ -49,7 +53,6 @@
   - name: Configure BIND Config file based on ServerRole
     template:
       src: "{{ lookup('first_found', configuration_file) }}"
-      # src: "{{ ServerRole }}-named.conf.j2"
       dest: "{{ confpath }}/named.conf"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"

@@ -41,8 +41,12 @@
   xfer_clients: "" # List of clients allowed to xfr "192.168.0.1; 192.168.10.11; 10.0.20.11; fd01:2:2:2::1;"
   rndc_add_zone: "no" # change to yes to dynamically add zones.
   primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
-        # blue-org: "fd01:2:2:2::1; 192.168.0.1;"
-        # green-org: "10.10.0.1; 10.200.0.1;"
+        # - {blue-org: "fd01:2:2:2::1; 192.168.0.1;"}
+        # - {green-org: "10.10.0.1; 10.200.0.1;"}
+  tsig_files: #all tsig files you wish to include in config
+    - 'catalog-basic'
+    - 'example.net'
+    - 'example.com'
   default_ttl: 3600
   soa_values:
     serial: "{{ ansible_date_time.epoch }}"
@@ -50,10 +54,12 @@
     retry: 28800
     expire: 604800
     minimum: 86400
+
   zone_file_path: 'templates' # the path to find zone files. Having them outside of the role will prevent role upgrade issues. Also used for per - zone zone statement files.
   conf_file_path: 'templates' # the path to find templated config files. Will not be used for per - zone configs.
   pri_domains:
-    - { name: 'example.net', zonetype: 'dyn' }
-    # - { name: 'example.info', zonetype: 'dyn', dnssec-policy: 'default' }
+    - { name: 'example.net', zonetype: 'dyn', update_policy: "update-policy { grant 'myhost-tsig' zonesub 'ANY'; };" }
     - { name: 'example.com', zonetype: 'static' }
+  sec_domains:
+    - { name: 'example.info' }
   rpz_soa_values: "{{ soa_values }}"

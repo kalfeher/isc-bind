@@ -1,0 +1,31 @@
+---
+  - name: Load any secondary specific vars
+    include_vars: secondary.yml
+
+  - name: Add per domain directory for Secondary zones.
+    file:
+      path: "{{ datapath }}/sec/{{ item.name }}"
+      state: directory
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: 0770
+    loop: "{{ sec_domains }}"
+
+  - name: Copy Zone statement files for secondary domains
+    template:
+      src: "{{ lookup('first_found', zone_statement) }}"
+      dest: "{{ confpath }}/{{ item.name }}.zone.conf"
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      backup: yes
+      mode: 0660
+    vars:
+      zone_statement:
+        files:
+          - "{{ item.name }}.zone.j2"
+          - secondary.zone.j2
+        paths:
+          - "{{ zone_file_path }}"
+          - 'templates'
+    loop: "{{ sec_domains }}"
+    notify: reconfig isc-bind scl

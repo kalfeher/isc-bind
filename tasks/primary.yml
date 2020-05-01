@@ -11,6 +11,11 @@
       mode: 0770
     loop: "{{ pri_domains }}"
 
+  - name: Add TSIG files if not present. Existing files will not be overwritten!
+    include_tasks: tsig_generation.yml
+    loop: "{{ tsig_files }}"
+    loop_control:
+      loop_var: tsig_name
 
   - name: Add Primary domain zone files if not present
     template:

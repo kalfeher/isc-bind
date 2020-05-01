@@ -4,7 +4,7 @@
   - name: Add bind keys if required. These will only be used the first time BIND starts
     copy:
       src: files/bind.keys.v9_11
-      dest: "{{ datapath }}/bind.keys"
+      dest: "{{ confpath }}/bind.keys"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: '0644'

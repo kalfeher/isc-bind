@@ -64,6 +64,7 @@ A simple zone statement for BIND's configuration file will be used if you do not
 
 #### Parked Domains
 TODO
+### `ServerRole`: secondary
 
 ## requirements.yml
 Add the following lines to `requirements.yml` :

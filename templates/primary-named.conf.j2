@@ -53,10 +53,10 @@ options {
     xfer;
     {% if primary_masters_list %}
       {% for name, addresses in primary_masters_list.items() %}
-    "{{ name }}-acl";
+  "{{ name }}-acl";
       {% endfor %}
     {% endif %}
-  };
+};
   allow-update {none;};
 };
 logging {

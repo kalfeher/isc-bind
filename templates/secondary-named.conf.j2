@@ -1,0 +1,130 @@
+/* Secondary authoritative server config.
+{{ generatedby }}
+*/
+acl "xfer" {
+{% if xfer_clients %}
+  {{ xfer_clients }}
+{% else %}
+	"none";
+{% endif %}
+};
+
+
+acl "trusted" {
+	127.0.0.0/8;
+	::1/128;
+	{{ TrustedACL }}
+};
+{% if primary_masters_list %}
+  {% for name, addresses in primary_masters_list.items() %}
+acl "{{ name }}-acl" {
+  {{ addresses }}
+};
+  {% endfor %}
+{% endif %}
+{% if primary_masters_list %}
+  {% for name, addresses in primary_masters_list.items() %}
+masters "{{ name }}-master-list" {
+  {{ addresses }}
+};
+  {% endfor %}
+{% endif %}
+
+options {
+	directory "{{ datapath }}";
+  version "{{ version_text }}";
+  listen-on { 127.0.0.1; {{ ListenV4 }} };
+  listen-on-v6 { ::1; {{ ListenV6 }} };
+  allow-query {any;};
+  allow-new-zones {{ rndc_add_zone }};
+  recursion no;
+  minimal-any yes;
+  minimal-responses yes;
+  dnssec-update-mode maintain;
+  serial-update-method unixtime; /* Zones will be signed. Mucking around with manual serials is too much trouble */
+  /* This dnstap configuration is designed to assist with server troubleshooting.*/
+  dnstap {
+    auth;
+  };
+  dnstap-output file "{{ logpath }}/dnstap-output" size 100M versions 5 suffix timestamp;
+  zone-statistics full;
+  allow-transfer {
+    trusted;
+    xfer;
+    {% if primary_masters_list %}
+      {% for name, addresses in primary_masters_list.items() %}
+    "{{ name }}-acl";
+      {% endfor %}
+    {% endif %}
+  };
+  allow-update {none;};
+};
+logging {
+	channel default_debug {
+		file "named.run";
+		print-time yes;
+		severity dynamic;
+	};
+	channel default_log {
+		file "{{ logpath }}/named.log" versions 5 size 100M;
+		print-time yes;
+		print-severity yes;
+		print-category yes;
+	};
+	channel query_log {
+		file "{{ logpath }}/query.log" versions 5 size 100M;
+		print-time yes;
+	};
+	channel xfers_log {
+		file "{{ logpath }}/transfers.log" versions 5 size 100M;
+		print-time yes;
+	};
+	channel update_log {
+		file "{{ logpath }}/update.log" versions 5 size 100M;
+		print-time yes;
+		severity debug 3;
+	};
+  category dnssec { default_log; };
+	category default { default_log; };
+	category general { default_log; };
+	category queries { query_log; };
+	category update { update_log; };
+};
+statistics-channels {
+	/* inet 127.0.0.1 port 8880 allow {trusted;}; */
+	{% if ListenStatsV4 %}
+	inet {{ ListenStatsV4 }} port 8880 allow {trusted;};
+	{% endif %}
+	{% if ListenStatsV6 %}
+	inet {{ ListenStatsV6 }} port 8880 allow {trusted;};
+	{% endif %}
+};
+include "{{ confpath }}/rndc.key";
+controls {
+	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };
+  inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
+};
+/* Add any DNSSEC policies here. Directories must exist and be writable for BIND process*/
+/* disabling dnssec-policy until more functionality is added.
+dnssec-policy "simple" {
+  dnskey-ttl 3600;
+  keys {
+      ksk key-directory lifetime P6M algorithm 13;
+      zsk key-directory lifetime P2M algorithm 13;
+  };
+  parent-ds-ttl P1D;
+  parent-propagation-delay PT1H;
+  parent-registration-delay P1D;
+  publish-safety PT4H;
+  retire-safety PT4H;
+  signatures-refresh P7D;
+  signatures-validity P4W;
+  signatures-validity-dnskey P4W;
+  zone-max-ttl PT48H;
+  zone-propagation-delay PT1H;
+
+};
+*/
+{% for domain in sec_domains %}
+include "{{ confpath }}/{{ domain.name }}.zone.conf";
+{% endfor %}

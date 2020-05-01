@@ -1,0 +1,10 @@
+---
+  - name: Is the tsig file present
+    find:
+      paths: "{{ confpath }}/{{ tsig_name }}.tsig"
+    register: tsig_found
+  
+  - name: Generate TSIG secret
+    set_fact:
+        tsig_pass: "{{ lookup('password','/dev/null', 'encrypt=argon2')|b64encode }}"
+  - name: Copy tsig template
