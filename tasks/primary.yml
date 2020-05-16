@@ -68,7 +68,7 @@
           - "{{ item.name }}.zone.j2"
           - simple.zone.j2
         paths:
-          - "{{ zone_file_path }}"
+          - "{{ conf_file_path }}"
           - 'templates'
     loop: "{{ pri_domains }}"
     notify: reconfig isc-bind scl

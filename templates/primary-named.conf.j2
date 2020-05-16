@@ -5,7 +5,7 @@ acl "xfer" {
 {% if xfer_clients %}
   {{ xfer_clients }}
 {% else %}
-	"none";
+  "none";
 {% endif %}
 };
 
@@ -31,7 +31,7 @@ masters "{{ name }}-master-list" {
 {% endif %}
 
 options {
-	directory "{{ datapath }}";
+  directory "{{ datapath }}";
   version "{{ version_text }}";
   listen-on { 127.0.0.1; {{ ListenV4 }} };
   listen-on-v6 { ::1; {{ ListenV6 }} };
@@ -99,9 +99,12 @@ statistics-channels {
 	inet {{ ListenStatsV6 }} port 8880 allow {trusted;};
 	{% endif %}
 };
+{% for file in tsig_files %}
+include "{{confpath}}/{{ file }}.tsig";
+{% endfor %}
 include "{{ confpath }}/rndc.key";
 controls {
-	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };
+  inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };
   inet ::1 port 953 allow { ::1/128; } keys { "rndc-key"; };
 };
 /* Add any DNSSEC policies here. Directories must exist and be writable for BIND process*/

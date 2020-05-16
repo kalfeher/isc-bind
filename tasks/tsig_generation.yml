@@ -3,8 +3,30 @@
     find:
       paths: "{{ confpath }}/{{ tsig_name }}.tsig"
     register: tsig_found
-  
-  - name: Generate TSIG secret
-    set_fact:
-        tsig_pass: "{{ lookup('password','/dev/null', 'encrypt=argon2')|b64encode }}"
-  - name: Copy tsig template
+    tags:
+      - tsig
+  - name: No TSIG file present
+    block:
+    - name: Generate TSIG secret
+      set_fact:
+          tsig_pass: "{{ lookup('password','/dev/null', 'encrypt=argon2')|b64encode }}"
+      tags:
+        - tsig
+        - secret
+    - name: Copy tsig template
+      template:
+        src: "{{ lookup('first_found', tsig_source) }}"
+        dest: "{{ confpath }}/{{ tsig_name }}.tsig"
+        owner: "{{ binduser }}"
+        group: "{{ binduser }}"
+        #force: no
+        mode: 0660
+      vars:
+        tsig_source:
+          files:
+            - "{{ tsig_name }}.tsig"
+            - tsig_template.j2
+          paths:
+            - "{{ zone_file_path }}"
+            - 'templates'
+    when: tsig_found.matched > 0
