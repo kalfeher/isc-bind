@@ -1,25 +1,26 @@
 ---
   - name: Is the tsig file present
     find:
-      paths: "{{ confpath }}/{{ tsig_name }}.tsig"
+      paths: "{{ confpath }}/"
+      pattern: "{{ tsig_name }}.tsig"
+      file_type: file
     register: tsig_found
     tags:
       - tsig
   - name: No TSIG file present
     block:
-    - name: Generate TSIG secret
+    - name: Generate TSIG secret. Consider adding to Ansible Vault
       set_fact:
           tsig_pass: "{{ lookup('password','/dev/null', 'encrypt=argon2')|b64encode }}"
       tags:
         - tsig
         - secret
-    - name: Copy tsig template
+    - name: Copy TSIG template
       template:
         src: "{{ lookup('first_found', tsig_source) }}"
         dest: "{{ confpath }}/{{ tsig_name }}.tsig"
         owner: "{{ binduser }}"
         group: "{{ binduser }}"
-        #force: no
         mode: 0660
       vars:
         tsig_source:
@@ -29,4 +30,5 @@
           paths:
             - "{{ zone_file_path }}"
             - 'templates'
-    when: tsig_found.matched > 0
+      notify: reconfig isc-bind scl
+    when: tsig_found.matched == 0

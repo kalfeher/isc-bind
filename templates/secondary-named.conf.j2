@@ -99,6 +99,9 @@ statistics-channels {
 	inet {{ ListenStatsV6 }} port 8880 allow {trusted;};
 	{% endif %}
 };
+{% for file in tsig_files %}
+include "{{confpath}}/{{ file }}.tsig";
+{% endfor %}
 include "{{ confpath }}/rndc.key";
 controls {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1/32; } keys { "rndc-key"; };

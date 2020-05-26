@@ -29,3 +29,5 @@
           - 'templates'
     loop: "{{ sec_domains }}"
     notify: reconfig isc-bind scl
+  - name: Move pre-existing TSIG files to host. These will not be generated if missing
+    
