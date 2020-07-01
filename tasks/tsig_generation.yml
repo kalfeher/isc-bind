@@ -1,5 +1,27 @@
 ---
-  - name: Is the tsig file present
+  - name: Is the tsig file present locally?
+    become: no
+    find:
+      paths: "{{ shared_file_path }}/"
+      pattern: "{{ tsig_name }}.tsig"
+      file_type: file
+    register: tsig_local
+    delegate_to: localhost
+    tags:
+      - tsig
+  - name: If found, copy local tsig file to remote host. Will overwrite if different.
+    copy:
+      src: "{{ shared_file_path }}/{{ tsig_name }}.tsig"
+      dest: "{{ confpath }}/{{ tsig_name }}.tsig"
+      owner: "{{ binduser }}"
+      group: "{{ binduser }}"
+      mode: '0660'
+      backup: yes
+    notify: reconfig isc-bind scl
+    when:
+      - tsig_local.matched > 0
+
+  - name: Is the tsig file present on remote?
     find:
       paths: "{{ confpath }}/"
       pattern: "{{ tsig_name }}.tsig"
@@ -7,6 +29,14 @@
     register: tsig_found
     tags:
       - tsig
+  - name: If present on remote, but not local, then fetch.
+    fetch:
+      src: "{{ confpath }}/{{ tsig_name }}.tsig"
+      dest: "{{ shared_file_path }}/{{ tsig_name }}.tsig"
+      flat: yes
+    when:
+      - tsig_local.matched == 0
+      - tsig_found.matched > 0
   - name: No TSIG file present
     block:
     - name: Generate TSIG secret. Consider adding to Ansible Vault
@@ -31,4 +61,10 @@
             - "{{ zone_file_path }}"
             - 'templates'
       notify: reconfig isc-bind scl
-    when: tsig_found.matched == 0
+    - name: Place the generated TSIG file on server for distribution
+      fetch:
+        src: "{{ confpath }}/{{ tsig_name }}.tsig"
+        dest: "{{ shared_file_path }}/"
+        flat: yes
+    when:
+      - tsig_found.matched == 0

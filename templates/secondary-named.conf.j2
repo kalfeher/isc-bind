@@ -15,17 +15,11 @@ acl "trusted" {
 	::1/128;
 	{{ TrustedACL }}
 };
-{% if primary_masters_list %}
-  {% for name, addresses in primary_masters_list.items() %}
-acl "{{ name }}-acl" {
-  {{ addresses }}
-};
-  {% endfor %}
-{% endif %}
-{% if primary_masters_list %}
-  {% for name, addresses in primary_masters_list.items() %}
-masters "{{ name }}-master-list" {
-  {{ addresses }}
+
+{% if secondary_masters_list %}
+  {% for master in secondary_masters_list %}
+masters "{{ master.name }}-master-list" {
+  {{ master.addresses }}
 };
   {% endfor %}
 {% endif %}
@@ -51,11 +45,7 @@ options {
   allow-transfer {
     trusted;
     xfer;
-    {% if primary_masters_list %}
-      {% for name, addresses in primary_masters_list.items() %}
-    "{{ name }}-acl";
-      {% endfor %}
-    {% endif %}
+
   };
   allow-update {none;};
 };
@@ -89,6 +79,7 @@ logging {
 	category general { default_log; };
 	category queries { query_log; };
 	category update { update_log; };
+  category xfer-in { xfers_log; };
 };
 statistics-channels {
 	/* inet 127.0.0.1 port 8880 allow {trusted;}; */

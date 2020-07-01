@@ -16,16 +16,16 @@ acl "trusted" {
 	{{ TrustedACL }}
 };
 {% if primary_masters_list %}
-  {% for name, addresses in primary_masters_list.items() %}
-acl "{{ name }}-acl" {
-  {{ addresses }}
+  {% for master in primary_masters_list %}
+acl "{{ master.name }}-acl" {
+  {{ master.addresses }}
 };
   {% endfor %}
 {% endif %}
 {% if primary_masters_list %}
-  {% for name, addresses in primary_masters_list.items() %}
-masters "{{ name }}-master-list" {
-  {{ addresses }}
+  {% for master in primary_masters_list %}
+masters "{{ master.name }}-master-list" {
+  {{ master.addresses }}
 };
   {% endfor %}
 {% endif %}
@@ -52,8 +52,8 @@ options {
     trusted;
     xfer;
     {% if primary_masters_list %}
-      {% for name, addresses in primary_masters_list.items() %}
-  "{{ name }}-acl";
+      {% for master in primary_masters_list %}
+  "{{ master.name }}-acl";
       {% endfor %}
     {% endif %}
 };

@@ -41,8 +41,10 @@
   xfer_clients: "" # List of clients allowed to xfr "192.168.0.1; 192.168.10.11; 10.0.20.11; fd01:2:2:2::1;"
   rndc_add_zone: "no" # change to yes to dynamically add zones.
   primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
-        # - {blue-org: "fd01:2:2:2::1; 192.168.0.1;"}
-        # - {green-org: "10.10.0.1; 10.200.0.1;"}
+        # - {name: 'blue-org', addresses: "fd01:2:2:2::1; 192.168.0.1;"}
+        # - {name 'green-org', addresses: "10.10.0.1; 10.200.0.1;"}
+  secondary_masters_list: "" # List of addresses for use in masters clauses within zones. No ACLs will be created.
+    # - { name: 'yellow-hosting', addresses: "fd01:3:3:3::1; 192.168.3.1;" }
   tsig_files: #all tsig files you wish to include in config
     - 'catalog-basic'
     - 'example.net'
@@ -57,9 +59,10 @@
 
   zone_file_path: 'templates' # the path to find zone files. Having them outside of the role will prevent role upgrade issues. Also used for per - zone zone statement files.
   conf_file_path: 'templates' # the path to find templated config files. Will not be used for per - zone configs.
+  shared_file_path: 'files' # the path to find files which will be shared amongst DNS hosts. This should be local to the ansible runner.
   pri_domains:
     - { name: 'example.net', zonetype: 'dyn', update_policy: "update-policy { grant 'myhost-tsig' zonesub 'ANY'; };" }
     - { name: 'example.com', zonetype: 'static' }
   sec_domains:
-    - { name: 'example.info' }
+    - { name: 'example.info', masters: "fd01:1:1:1::1;" } # masters can contain either IP addresses or the name of a masters list. In this role, a masters list is generated with the secondary_masters_list.
   rpz_soa_values: "{{ soa_values }}"

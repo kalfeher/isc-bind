@@ -1,6 +1,6 @@
-zone "{{ item.name }}" IN {
+zone "{{ domain.name }}" IN {
   type secondary;
-  file "sec/{{ item.name }}/{{ item.name }}.db";
-
+  file "sec/{{ domain.name }}/{{ domain.name }}.db";
+  masters { {{ domain.masters }} };
   allow-query { any; };
 };
