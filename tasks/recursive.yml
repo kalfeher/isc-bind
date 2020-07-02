@@ -18,37 +18,60 @@
       group: "{{ binduser }}"
       mode: 0770
 
-  - name: Copy RPZ zone files
-    template:
-      src: "{{ lookup('first_found', rpz_source) }}"
-      dest: "{{ datapath }}/rpz/{{ item }}.db"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      backup: yes
-      mode: 0660
-    vars:
-      rpz_source:
-        files:
-          - "{{ item }}.db.j2"
-          - basic_rpz.db.j2
-        paths:
-          - "{{ zone_file_path }}"
-          - 'templates'
-    loop: "{{ rpz_policies }}"
-    when: rpz_policies is defined
-    notify: reconfig isc-bind scl
-    register: zone_changes
+  - name: Prepare any cron based RPZ feeds
+    block:
+    - name: Merge static RPZ with cron based feeds
+      set_fact:
+        rpz_policies: "{{ rpz_policies + [{ 'name': item.name, 'updated_by':'cron' }] }}"
+      loop: "{{ rpz_cron_jobs }}"
+    - name: Add cron jobs for RPZ feeds
+      cron:
+        name: "{{item.cron_label}}"
+        minute: "{{item.minute}}"
+        hour: "{{item.hour}}"
+        job: "{{item.job}}"
+        state: "present"
+        user: "{{binduser}}"
+      loop: "{{rpz_cron_jobs}}"
+      loop_control:
+        label: "{{item.name}}"
+    when: rpz_cron_jobs is defined
 
-  - name: Static Zone file changes will cause new serial to be written
-    template:
-      src: rpz-serial.j2
-      dest: "{{ datapath }}/rpz/{{ policy.item }}.serial"
-      force: yes
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0660
-    when: policy.changed == true
-    loop: "{{ zone_changes.results}}"
-    loop_control:
-      loop_var: policy
-      label: policy.item
+  - name: RPZ policies and files
+    block:
+    - name: Copy RPZ zone files
+      template:
+        src: "{{ lookup('first_found', rpz_source) }}"
+        dest: "{{ datapath }}/rpz/{{ item.name }}.db"
+        owner: "{{ binduser }}"
+        group: "{{ binduser }}"
+        backup: yes
+        mode: 0660
+      vars:
+        rpz_source:
+          files:
+            - "{{ item.name }}.db.j2"
+            - "{{ item.name }}.db"
+            - basic_rpz.db.j2
+          paths:
+            - "{{ zone_file_path }}"
+            - 'files'
+            - 'templates'
+      loop: "{{ rpz_policies }}"
+      when: item.updated_by == 'manual'
+      notify: reconfig isc-bind scl
+      register: zone_changes
+    - name: Static Zone file changes will cause new serial to be written
+      template:
+        src: rpz-serial.j2
+        dest: "{{ datapath }}/rpz/{{ policy.item }}.serial"
+        force: yes
+        owner: "{{ binduser }}"
+        group: "{{ binduser }}"
+        mode: 0660
+      when: policy.changed == true
+      loop: "{{ zone_changes.results}}"
+      loop_control:
+        loop_var: policy
+        label: policy.item
+    when: rpz_policies is defined

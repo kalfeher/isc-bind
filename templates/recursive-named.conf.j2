@@ -46,9 +46,11 @@ options {
 	{% endif %}
 /* RPZ configuration */
   {% if rpz_policies is defined %}
+  response-policy {
   {% for policy in rpz_policies %}
-  response-policy { zone "{{ policy }}"; };
+   zone "{{ policy.name }}";
   {% endfor %}
+  } break-dnssec yes;
   {% endif %}
 
 };
@@ -110,6 +112,6 @@ controls {
 /* Allowing localhost to query policies.
    Edit named.conf.j2 template if you do not wish to allow this. */
 {% for policy in rpz_policies %}
-zone "{{ policy }}" { type master; file "rpz/{{ policy }}.db"; allow-query { localhost; }; };
+zone "{{ policy.name }}" { type master; file "rpz/{{ policy.name }}.db"; allow-query { localhost; }; };
 {% endfor %}
 {% endif %}
