@@ -4,7 +4,15 @@
   rpz_policies: # Manually generated zones.
     - { name: "basic_rpz", updated_by: "manual" }
     - { name: "mozilla_doh_rpz", updated_by: "manual" }
-  rpz_block_domains: # For the basic_rpz policy
+  rpz_xfr_feed:
+    - { 'name': 'spamhaus', updated_by: "xfr_in", masters: ['127.0.0.2','127.0.0.3'] }
+  short_time:
+    five_min: '1,6,11,16,21,26,31,36,41,46,51,56'
+    fifteen_min: '1,16,31,46'
+  rpz_cron_jobs:
+    - { 'name': 'urlhaus', 'cron_label': 'Fetch RPZ from urlhaus.abuse.ch', 'minute': '{{ short_time.fifteen_min }}', 'hour': '*', 'job': 'wget https://urlhaus.abuse.ch/downloads/rpz/ -O {{ datapath }}/rpz/urlhaus.db && rndc reload urlhaus' }
+  # These vars for the basic_rpz policy
+  rpz_block_domains:
     - "xxx"
     - "sex"
     - "adult"
@@ -14,8 +22,3 @@
   #  - "ns1.evil.example.net"
   #rpz_block_ns_ip:
   #  - "32.5.0.0.127"
-  short_time:
-    five_min: '1,6,11,16,21,26,31,36,41,46,51,56'
-    fifteen_min: '1,16,31,46'
-  rpz_cron_jobs:
-    - { 'name': 'urlhaus', 'cron_label': 'Fetch RPZ from urlhaus.abuse.ch', 'minute': '{{ short_time.fifteen_min }}', 'hour': '*', 'job': 'wget https://urlhaus.abuse.ch/downloads/rpz/ -O {{ datapath }}/rpz/urlhaus.db && rndc reload urlhaus' }

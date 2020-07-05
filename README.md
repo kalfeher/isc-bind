@@ -11,7 +11,7 @@ A recursive server requires no additional variables.
 A basic recursive configuration file will be added to BIND.
 If either `{{ListenrndcV4}}` or `{{ListenrndcV6}}` are not empty, then a rule will be added to firewalld allowing DNS inbound on the public zone:  `{{firewalldZone}}`.
 
-A bind.keys file will be provided unless `key_file: "no"` (default is yes). This provides a method for BIND to prime its trust anchors. If the file is not provided, BIND will use its internal trust anchors. The file will only ever be used the first time BIND runs. An internet connected host should validate this file (within the `files` directory in the role ), prior to executing this role in a playbook. Signatures can be found here: https://downloads.isc.org/isc/bind9/keys/9.11/
+A bind.keys file will be provided unless `key_file: "no"` (default is no). This provides a method for BIND to prime its trust anchors. If the file is not provided, BIND will use its internal trust anchors. The file will only ever be used the first time BIND runs. An internet connected host should validate this file (within the `files` directory in the role ), prior to executing this role in a playbook. Signatures can be found here: https://downloads.isc.org/isc/bind9/keys/9.11/
 
 #### Response Policy Zones (RPZ)
 A basic RPZ configuration is included for `recursive` servers. If you do not use an RPZ feed and do not want to create a complex policy, you can use the included `basic_rpz` policy. The default policy focuses on blocking domains and nameservers that might host malicious or inappropriate content. It does not contain any client based policies.

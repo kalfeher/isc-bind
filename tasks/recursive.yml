@@ -64,7 +64,7 @@
     - name: Static Zone file changes will cause new serial to be written
       template:
         src: rpz-serial.j2
-        dest: "{{ datapath }}/rpz/{{ policy.item }}.serial"
+        dest: "{{ datapath }}/rpz/{{ policy.item.name }}.serial"
         force: yes
         owner: "{{ binduser }}"
         group: "{{ binduser }}"
@@ -73,5 +73,5 @@
       loop: "{{ zone_changes.results}}"
       loop_control:
         loop_var: policy
-        label: policy.item
+        label: policy.item.name
     when: rpz_policies is defined
