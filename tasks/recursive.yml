@@ -36,6 +36,13 @@
       loop_control:
         label: "{{item.name}}"
     when: rpz_cron_jobs is defined
+  - name: Prepare any XFR based RPZ feeds
+    block:
+    - name: Add XFR feeds to rpz_policies
+      set_fact:
+        rpz_policies: "{{ rpz_policies + [{ 'name': item.name, 'updated_by': item.updated_by }] }}"
+      loop: "{{ rpz_xfr_feed }}"
+    when: rpz_xfr_feed is defined
 
   - name: RPZ policies and files
     block:
@@ -61,6 +68,7 @@
       when: item.updated_by == 'manual'
       notify: reconfig isc-bind scl
       register: zone_changes
+
     - name: Static Zone file changes will cause new serial to be written
       template:
         src: rpz-serial.j2
@@ -74,4 +82,5 @@
       loop_control:
         loop_var: policy
         label: policy.item.name
+
     when: rpz_policies is defined

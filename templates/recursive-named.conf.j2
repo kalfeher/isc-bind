@@ -11,6 +11,14 @@ acl "trusted" {
 acl "clients" {
 	{{ queryclientsACL }}
 };
+{% if rpz_xfr_feed %}
+  {% for feed in rpz_xfr_feed %}
+masters "{{ feed.name }}-master-list" {
+  {{ feed.masters }}
+};
+  {% endfor %}
+{% endif %}
+
 
 options {
 	directory "{{ datapath }}";
@@ -112,6 +120,10 @@ controls {
 /* Allowing localhost to query policies.
    Edit named.conf.j2 template if you do not wish to allow this. */
 {% for policy in rpz_policies %}
+{% if policy.updated_by == 'xfr' %}
+zone "{{ policy.name }}" { type secondary; file "rpz/{{ policy.name }}.db"; allow-query { localhost; }; masters { "{{ policy.name }}-master-list"; };  };
+{% else %}
 zone "{{ policy.name }}" { type master; file "rpz/{{ policy.name }}.db"; allow-query { localhost; }; };
+{% endif %}
 {% endfor %}
 {% endif %}

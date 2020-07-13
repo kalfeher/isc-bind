@@ -4,8 +4,8 @@
   rpz_policies: # Manually generated zones.
     - { name: "basic_rpz", updated_by: "manual" }
     - { name: "mozilla_doh_rpz", updated_by: "manual" }
-  rpz_xfr_feed:
-    - { 'name': 'spamhaus', updated_by: "xfr_in", masters: ['127.0.0.2','127.0.0.3'] }
+  #rpz_xfr_feed:
+    #- { 'name': 'spamhaus', updated_by: "xfr", masters: "127.0.0.2; 127.0.0.3;" }
   short_time:
     five_min: '1,6,11,16,21,26,31,36,41,46,51,56'
     fifteen_min: '1,16,31,46'
