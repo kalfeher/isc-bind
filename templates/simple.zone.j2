@@ -3,11 +3,15 @@ zone "{{ item.name }}" IN {
   file "pri/{{ item.name }}/{{ item.name }}.db";
   //also-notify ;
   allow-query { any; };
-  {% if item.zonetype == 'dyn' %}
+  {% if item.zonetype == 'dyn' -%}
+    {% if item.update_policy is defined -%}
+{{ item.update_policy }}
+    {% else -%}
   update-policy local;
-    {% if item.dnssec_policy is defined %}
+    {% endif -%}
+    {%- if item.dnssec_policy is defined -%}
   dnssec-policy "{{ item.dnssec_policy }}";
-    {% endif %}
-  {% endif %}
-  key-directory "pri/{{ item.name }}/keys";
+    {%- endif -%}
+  {%- endif -%}
+  //key-directory "pri/{{ item.name }}/keys";
 };
