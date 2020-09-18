@@ -4,7 +4,7 @@
 
   - name: Add per domain directory for Secondary zones.
     file:
-      path: "{{ datapath }}/sec/{{ domain.name }}"
+      path: "{{ datapath }}/{{ secondary_zone_subdir }}/{{ domain.name }}"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"

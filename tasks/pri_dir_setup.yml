@@ -2,14 +2,14 @@
   # set up directories for Primary zone files
   - name: Set up Primary Zone directory
     file:
-      path: "{{ datapath }}/pri/{{ domain }}"
+      path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain }}"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
       mode: 0770
   - name: Add keys directory for Primary zones
     file:
-      path: "{{ datapath }}/pri/{{ domain }}/keys"
+      path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain }}/keys"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"

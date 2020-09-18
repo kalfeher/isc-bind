@@ -18,6 +18,8 @@
   datapath: /var/named
   # Log destination
   logpath: /var/log/named
+  primary_zone_subdir: pri #subdirectory for storing primary zone files
+  secondary_zone_subdir: "{{ primary_zone_subdir }}" #using the primary subdir may make failover operations easier.
   # For all ACL vars Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
   version_text: "-- DNS --"
   # If these two vars are left empty only queries will only be possible from the localhost

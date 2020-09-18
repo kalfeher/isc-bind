@@ -4,7 +4,7 @@
 
   - name: Add per domain directory for Primary zones. including keys dir.
     file:
-      path: "{{ datapath }}/pri/{{ item.name }}/keys"
+      path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ item.name }}/keys"
       state: directory
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
@@ -20,7 +20,7 @@
   - name: Add Primary domain zone files if not present
     template:
       src: "{{ lookup('first_found', zone_files ) }}"
-      dest: "{{ datapath }}/pri/{{ item.name }}/{{ item.name }}.db"
+      dest: "{{ datapath }}/{{ primary_zone_subdir }}/{{ item.name }}/{{ item.name }}.db"
       force: "{{ 'yes' if item.zonetype == 'static' else 'no' }}"
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
@@ -42,7 +42,7 @@
   - name: Static Zone file changes will cause new serial to be written
     template:
       src: serial.j2
-      dest: "{{ datapath }}/pri/{{ domain.item.name }}/{{ domain.item.name }}.serial"
+      dest: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain.item.name }}/{{ domain.item.name }}.serial"
       force: yes
       owner: "{{ binduser }}"
       group: "{{ binduser }}"
