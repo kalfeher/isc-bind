@@ -15,7 +15,15 @@ acl "trusted" {
 	::1/128;
 	{{ TrustedACL }}
 };
-
+{% if secondary_masters_list %}
+  {%- for master in secondary_masters_list %}
+acl "{{ master.name }}-acl" {
+  {% for address in master.addresses -%}
+  {{ address }};
+  {% endfor %}
+};
+  {% endfor %}
+{% endif %}
 {% if secondary_masters_list %}
   {%- for master in secondary_masters_list -%}
 masters "{{ master.name }}-master-list" {
