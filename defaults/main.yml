@@ -18,6 +18,8 @@
   datapath: /var/named
   # Log destination
   logpath: /var/log/named
+  primary_zone_subdir: pri #subdirectory for storing primary zone files
+  secondary_zone_subdir: "{{ primary_zone_subdir }}" #using the primary subdir may make failover operations easier.
   # For all ACL vars Seperate IP address entries with semi colons ';'. Last entry must terminate with a ';'
   version_text: "-- DNS --"
   # If these two vars are left empty only queries will only be possible from the localhost
@@ -43,8 +45,8 @@
   primary_masters_list: "" # List of addresses for use in also-notify clauses within zones. Will also be used to create ACLs for xfr
         # - {name: 'blue-org', addresses: "fd01:2:2:2::1; 192.168.0.1;"}
         # - {name 'green-org', addresses: "10.10.0.1; 10.200.0.1;"}
-  secondary_masters_list: "" # List of addresses for use in masters clauses within zones. No ACLs will be created.
-    # - { name: 'yellow-hosting', addresses: "fd01:3:3:3::1; 192.168.3.1;" }
+  secondary_masters_list: "" # List of addresses for use in masters clauses within zones. Use python list syntax for addresses, do not terminate with ';'
+    # - { name: 'yellow-hosting', addresses: ["fd01:3:3:3::1", "192.168.3.1"] }
   tsig_files: #all tsig files you wish to include in config
     - 'catalog-basic'
     - 'example.net'
@@ -65,4 +67,31 @@
     - { name: 'example.com', zonetype: 'static' }
   sec_domains:
     - { name: 'example.info', masters: "fd01:1:1:1::1;" } # masters can contain either IP addresses or the name of a masters list. In this role, a masters list is generated with the secondary_masters_list.
+  ## RPZ Vars
+  
+  key_file: "no"
+  rpz_soa_contact: "rpz.localhost"
+  rpz_policies: # Manually generated zones.
+    - { name: "basic_rpz", updated_by: "manual" }
+    - { name: "mozilla_doh_rpz", updated_by: "manual" }
+  #rpz_xfr_feed:
+    #- { 'name': 'spamhaus', updated_by: "xfr", masters: "127.0.0.2; 127.0.0.3;" }
+  short_time:
+    five_min: '1,6,11,16,21,26,31,36,41,46,51,56'
+    fifteen_min: '1,16,31,46'
+  rpz_cron_jobs:
+    - { 'name': 'urlhaus', 'cron_label': 'Fetch RPZ from urlhaus.abuse.ch', 'minute': '{{ short_time.fifteen_min }}', 'hour': '*', 'job': 'wget https://urlhaus.abuse.ch/downloads/rpz/ -O {{ datapath }}/rpz/urlhaus.db && rndc reload urlhaus' }
+
   rpz_soa_values: "{{ soa_values }}"
+  # These vars for the basic_rpz policy
+  rpz_block_domains:
+    - "xxx"
+    - "sex"
+    - "adult"
+    - "mail"
+    - "avsvmcloud.com"
+    # - "evil.example.net"
+  #rpz_block_ns_label:
+  #  - "ns1.evil.example.net"
+  #rpz_block_ns_ip:
+  #  - "32.5.0.0.127"
