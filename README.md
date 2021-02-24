@@ -63,7 +63,7 @@ Because this role will not update dynamic zones after the first time they are ad
 A simple zone statement for BIND's configuration file will be used if you do not include a file with the statement in it. The path set by `{{zone_file_path}}` or in the `templates` directory will be searched for any zone statement files. Zone statement file names should be of the form _domain_.zone.j2. An example file (`example.com.zone.j2`) is included in the `templates` directory.
 
 ## dnssec-policy
-The primary-named.conf.j2 template comes with a basic dnssec-policy. Because the `default` policy within BIND is subject to change as the result of an upgrade, you are advised to use an explicitly defined policy. The `simple` dnssec-policy is designed to be useful for most situations. Note that as of BIND 9.16.7 parent DS entries are no longer assumed based on time. Therefore you should run `rndc dnssec -checkds` once you have submitted your DS to your registrar and until the DS is visible. A future version of this role will add a cron task to do this.
+The primary-named.conf.j2 template comes with a basic dnssec-policy. Because the `default` policy within BIND is subject to change as the result of an upgrade, you are advised to use an explicitly defined policy. The `simple` dnssec-policy is designed to be useful for most situations. Note that as of BIND 9.16.7 parent DS entries are no longer assumed based on time. Therefore you should run `rndc dnssec -checkds published <zonename>` once you have submitted your DS to your registrar and until the DS is visible. A future version of this role will add a cron task to do this.
 
 #### Parked Domains
 TODO

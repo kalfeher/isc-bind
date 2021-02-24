@@ -28,7 +28,7 @@ _dmarc.{{ item.name }}.       TXT "v=DMARC1; p=reject; rua=mailto:{{ contact_ema
 ;_dmarc.{{ item.name }}.  CNAME _dmarc.parked.example.net.
 
 ; NULL MX record
-*.{{ item.name }}.  MX  0.
+*.{{ item.name }}.  MX  0 .
 ; Restrict who can allocate certificates to this domain
 {{ item.name }}.    IN      CAA 0 iodef "mailto:{{ contact_email_certs }}"
 {{ item.name }}.		IN      CAA	0 issue "letsencrypt.org"
