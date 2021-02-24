@@ -118,7 +118,8 @@ dnssec-policy "simple" {
   };
   parent-ds-ttl P1D;
   parent-propagation-delay PT1H;
-  parent-registration-delay P1D;
+  /* The option below is deprecated. use `rndc dnssec -checkds` instead.
+  //parent-registration-delay P1D;
   publish-safety PT4H;
   retire-safety PT4H;
   signatures-refresh P7D;

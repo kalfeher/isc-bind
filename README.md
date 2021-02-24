@@ -62,6 +62,9 @@ Because this role will not update dynamic zones after the first time they are ad
 #### Configuration file zone statements
 A simple zone statement for BIND's configuration file will be used if you do not include a file with the statement in it. The path set by `{{zone_file_path}}` or in the `templates` directory will be searched for any zone statement files. Zone statement file names should be of the form _domain_.zone.j2. An example file (`example.com.zone.j2`) is included in the `templates` directory.
 
+## dnssec-policy
+The primary-named.conf.j2 template comes with a basic dnssec-policy. Because the `default` policy within BIND is subject to change as the result of an upgrade, you are advised to use an explicitly defined policy. The `simple` dnssec-policy is designed to be useful for most situations. Note that as of BIND 9.16.7 parent DS entries are no longer assumed based on time. Therefore you should run `rndc dnssec -checkds` once you have submitted your DS to your registrar and until the DS is visible. A future version of this role will add a cron task to do this.
+
 #### Parked Domains
 TODO
 ### `ServerRole`: secondary
@@ -80,6 +83,4 @@ There are two variables which will make updating the role much simpler.
 `{{zone_file_path}}` should be set for any host with that sets _primary_ as their `ServerRole`. This will allow you to specify a location for zone files and zone statement files which will not be replaced. You can and should create explicit zone files and place them in the `zone_file_path` directory. You do not need to also create the zone statement files for each domain. If the role defaults are acceptable, leave these out of the `zone_file_path` directory and the role will automatically use the zone statement file in the `templates` directory.
 
 ## Workarounds
-During testing, BIND occasionally failed to listen to all its configured interfaces on boot up. This was due to Network Manager having not completed interface configuration, prior to BIND starting. The role will update the standard service file to wait for network manager to finish, before starting bind. This issue has been logged (https://gitlab.isc.org/isc-projects/bind9/issues/1594) and the workaround may be removed or altered based on how it is resolved by ISC. _update: A change has been made to fix this issue. This note will be removed soon._
-
-The **dnssec-policy** feature has flaws that make it unusable in BIND 9.15.8. This feature should not be used (its currently only in-dev) and is known not to work. A fix has been create by ISC and this entry will be updated once that fix is released in any of the copr isc=bind releases.
+None at the moment :)
