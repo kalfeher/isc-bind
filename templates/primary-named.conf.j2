@@ -46,7 +46,7 @@ options {
   dnstap {
     auth;
   };
-  dnstap-output file "{{ logpath }}/dnstap-output" size 100M versions 5 suffix timestamp;
+  dnstap-output file "{{ logpath }}/dnstap-output" size 100M versions 5 suffix increment;
   zone-statistics full;
   allow-transfer {
     trusted;
