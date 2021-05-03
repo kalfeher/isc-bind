@@ -1,0 +1,18 @@
+---
+  # Vars for hosts which will deploy or update zones.
+
+  contact_email_certs: "certs@example.net"
+  contact_email_dmarc: "dmarc@example.net"
+  soa_root_server: "ns1.example.net."
+  soa_values:
+    serial: "{{ ansible_date_time.epoch }}"
+    refresh: 14400
+    retry: 28800
+    expire: 604800
+    minimum: 86400
+  soa_root_email: root.example.net. # Primary server operator's public email. do not use '@'
+  # The below dictionary should only be used by domains which do not send email.
+  anti_malware_RR:
+    SPF: "v=spf1 -all"
+    DMARC: "v=DMARC1; p=reject; rua=mailto:{{ contact_email_dmarc }}; ruf=mailto:{{ contact_email_dmarc }};"
+    DKIM: "v=DKIM1; p="

@@ -1,3 +1,6 @@
+## Breaking Change Warning
+This role will be distributed within a collection in the near future. At that time, the dns_update directory will move underneath the playbooks directory as per the standard collection structure. Functionality is not expected to change. 
+
 # isc-bind
 Ansible role to deploy the COPR packaged version of ISC BIND. Suitable for RHEL/CentOS 7/8. Should work for Fedora, but not tested. Each configuration is deliberately simple. Default options are left as-is unless specifically required for the `ServerRole`.
 
@@ -81,6 +84,9 @@ There are two variables which will make updating the role much simpler.
 `{{conf_file_path}}` should only be set if you are very familiar with BIND configuration. This will allow you to specify the location of configuration files which will not be replaced if the role is updated.
 
 `{{zone_file_path}}` should be set for any host with that sets _primary_ as their `ServerRole`. This will allow you to specify a location for zone files and zone statement files which will not be replaced. You can and should create explicit zone files and place them in the `zone_file_path` directory. You do not need to also create the zone statement files for each domain. If the role defaults are acceptable, leave these out of the `zone_file_path` directory and the role will automatically use the zone statement file in the `templates` directory.
+
+## Updating DNS Records
+A playbook and variable file is supplied underneath the `dns_update` directory as an example. You do not need to use the dns_update playbooks with this role. Nor do you need DNS servers deployed by this role to use the dns_update playbooks. For further information there is a readme.md within the dns_update directory.
 
 ## Workarounds
 None at the moment :)

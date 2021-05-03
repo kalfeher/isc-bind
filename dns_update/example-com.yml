@@ -1,0 +1,35 @@
+---
+  domain: "example.com." # Fully qualified
+  # This domain does not send any email.  
+  caa_content:
+    mailto: "{{contact_email_certs}}" # Can be common to all domains
+    # issuer configured manually as there may be more than one.
+
+  # General zone contents. Most records go here. Updated when no tag supplied
+  zone_contents:
+    - {type: 'A', record: '{{domain}}', value: '10.1.1.10', ttl: '3600'} 
+    - {type: 'A', record: 'www.{{domain}}', value: '10.1.1.10', ttl: '3600'} 
+    - {type: 'AAAA', record: '{{domain}}', value: 'fd01:1:1:1:10', ttl: '3600'}
+    - {type: 'A', record: 'manyhosts.{{domain}}', value: ['10.1.1.11', '10.1.1.12'], ttl: '500'} # Example of two A records for a single hostname.
+
+  
+  # CNAME entries. Updated when either no tag is used or the 'cname' tag is supplied
+  cname_records: 
+    - {type: 'CNAME', record: 'myname.{{domain}}', value: 'www.{{domain}}'}
+
+
+  template_records:
+    - {type: 'SOA', record: '{{domain}}', value: "{{soa_root_server}} {{ soa_root_email }} {{ ansible_date_time.epoch }} {{ soa_values.refresh }} {{ soa_values.retry }} {{ soa_values.expire }} {{ soa_values.minimum }}" }
+    - {type: 'CAA', record: '{{domain}}', value: ['0 iodef "mailto:{{caa_content.mailto}}"','0 issue "letsencrypt.org"']} # Add more issuers as additional list items here..
+    - {type: 'MX', record: '{{domain}}', value: "0 ." } # Null MX
+    - {type: 'MX', record: '*.{{domain}}', value: "0 ." } # Null MX for subdomains
+    - {type: 'TXT', record: '{{domain}}', value: ["{{anti_malware_RR.SPF}}"]} # All apex TXT records go here
+    - {type: 'TXT', record: '*.{{domain}}', value: ["{{anti_malware_RR.SPF}}", "{{anti_malware_RR.DKIM}}"]}
+    - {type: 'TXT', record: '_dmarc.{{domain}}', value: "{{anti_malware_RR.DMARC}}"} # DMARC special subdomain
+    - {type: 'TXT', record: '*._domainkey.{{domain}}', value: "{{anti_malware_RR.DKIM}}"} # Domainkey special subdomain
+
+  # Add records below to delete or permenently block
+  blocked_records:
+    - {type: 'A', record: 'home.{{domain}}'}
+
+  default_ttl: "3600"

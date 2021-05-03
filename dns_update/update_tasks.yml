@@ -1,0 +1,111 @@
+---
+  - name: Update _all_ DNS records via nsupdate
+    nsupdate:
+      key_name: "{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }}"
+      key_secret: "{{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+      key_algorithm: "{{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}"
+      server: "{{ dns_update_details[domain.name].host|default(dns_update_details['default'].host) }}"
+      record: "{{ RR.record }}"
+      type: "{{ RR.type }}"
+      value: "{{ RR.value }}"
+      ttl: "{{ RR.ttl|default(default_ttl, true) }}" # seconds
+      zone: "{{domain}}"
+    become: no
+    loop: "{{ zone_contents|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+
+  - name: Update CNAME DNS records via nsupdate
+    nsupdate:
+      key_name: "{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }}"
+      key_secret: "{{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+      key_algorithm: "{{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}"
+      server: "{{ dns_update_details[domain.name].host|default(dns_update_details['default'].host) }}"
+      record: "{{ RR.record }}"
+      type: "{{ RR.type }}"
+      value: "{{ RR.value }}"
+      ttl: "{{ RR.ttl|default(default_ttl, true) }}" # seconds
+    become: no
+    loop: "{{ cname_records|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - cname
+      - never
+    
+  - name: Update just TXT records via nsupdate
+    nsupdate:
+      key_name: "{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }}"
+      key_secret: "{{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+      key_algorithm: "{{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}"
+      server: "{{ dns_update_details[domain.name].host|default(dns_update_details['default'].host) }}"
+      record: "{{ RR.record }}"
+      type: "{{ RR.type }}"
+      value: "{{RR.value }}"
+      ttl: "{{ RR.ttl|default(default_ttl, true) }}" # seconds
+    become: no
+    when: RR.type=="TXT"
+    loop: "{{ zone_contents }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - txt
+      - never
+
+  - name: Get time for SOA update
+    setup:
+      gather_subset:
+        - '!all'
+    tags:
+      - template
+      - never
+      
+  - name: Update template records via nsupdate
+    nsupdate:
+      key_name: "{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }}"
+      key_secret: "{{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+      key_algorithm: "{{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}"
+      server: "{{ dns_update_details[domain.name].host|default(dns_update_details['default'].host) }}"
+      record: "{{ RR.record }}"
+      type: "{{ RR.type }}"
+      value: "{{RR.value }}"
+      ttl: "{{ RR.ttl|default(default_ttl, true) }}" # seconds
+    become: no
+    loop: "{{ template_records }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.value }}"
+    tags:
+      - template
+      - never
+
+  - name: Debug delete
+    debug:
+      msg: "{{domain}}"
+    tags:
+      - never
+      - delete
+
+  - name: Update Blocked or delete DNS entries via nsupdate
+    nsupdate:
+      key_name: "{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }}"
+      key_secret: "{{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+      key_algorithm: "{{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}"
+      server: "{{ dns_update_details[domain.name].host|default(dns_update_details['default'].host) }}"
+      record: "{{ RR.record }}"
+      type: "{{ RR.type }}"
+      state: absent
+      zone: "{{domain}}"
+      value: "{{RR.value|default('')}}"
+    become: no
+    loop: "{{ blocked_records|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - blocked
+      - delete
+      - always

@@ -1,0 +1,44 @@
+---
+  - name: DNS update playbook
+    hosts: local # This should run local to a controller
+    gather_facts: no
+    tasks:
+        - include_vars: "common_dns_vars.yml"
+          tags:
+            - always
+        - include_vars: '{{ domainname|replace(".", "-" )}}.yml'
+          tags:
+            - always
+
+        - name: DNS update with no tags
+          include_tasks:
+            file: update_tasks.yml
+
+        - name: DNS update with cname tag
+          include_tasks:
+            file: update_tasks.yml
+          tags:
+            - cname
+            - never
+
+        - name: DNS Update with txt tag 
+          include_tasks:
+            file: update_tasks.yml
+          tags:
+            - txt
+            - never
+
+        - name: DNS update with template tag
+          include_tasks:
+            file: update_tasks.yml
+          tags:
+            - template
+            - never
+            
+        - name: DNS update with blocked or delete tag
+          include_tasks:
+            file: update_tasks.yml
+          tags:
+            - blocked
+            - delete
+            - never
