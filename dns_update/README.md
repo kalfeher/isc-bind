@@ -47,15 +47,15 @@ ansible-playbook run_update.yml -e "domainname=example.com"
 ### Choosing Which Records to Update
 By supplying the relevant tag when calling the `run_update.yml` playbook, the specific tasks executed can be chosen.
 
-*_no tag_*: When no tag is supplied, the items in the list `zone_contents` are updated within the domain
+***no tag***: When no tag is supplied, the items in the list `zone_contents` are updated within the domain
 
-*cname*: When `cname` is supplied as a tag, then the items in the list `cname_records` are updated within the domain
+**cname**: When `cname` is supplied as a tag, then the items in the list `cname_records` are updated within the domain
 
-*txt*: When `txt` is supplied as a tag, then iterms in the list `zone_contents` which are TXT records are updated within the domain
+**txt**: When `txt` is supplied as a tag, then iterms in the list `zone_contents` which are TXT records are updated within the domain
 
-*template*: When `template` is supplied as a tag, the items in the list `template_records` are updated within the domain
+**template**:  When `template` is supplied as a tag, the items in the list `template_records` are updated within the domain
 
-*blocked* or *delete*: When either `blocked` or `delete` are supplied as a tag then the items in the list `blocked_records` are _deleted_ from the domain.
+**blocked** or **delete**: When either `blocked` or `delete` are supplied as a tag then the items in the list `blocked_records` are _deleted_ from the domain.
 
 _Note that the task to delete records in the `blocked_records` list will always run regardless of the tag supplied. This ensures that records which should not be present are always removed from the domain. Supplying the `blocked` or `delete` tag simply ensures that no other update action occurs._
 
