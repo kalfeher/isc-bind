@@ -22,7 +22,7 @@
       path: "{{ logpath }}"
       state: directory
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0770
 
   - name: Add ISC-BIND SCL paths to user profiles.
@@ -54,8 +54,9 @@
     template:
       src: "{{ lookup('first_found', configuration_file) }}"
       dest: "{{ confpath }}/named.conf"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      owner: "root"
+      group: "{{ bindgroup }}"
+      mode: 0640
       backup: yes
     vars:
       configuration_file:

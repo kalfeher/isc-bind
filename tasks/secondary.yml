@@ -7,7 +7,7 @@
       path: "{{ datapath }}/{{ secondary_zone_subdir }}/{{ domain.name }}"
       state: directory
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0770
     loop: "{{ sec_domains }}"
     loop_control:
@@ -17,10 +17,10 @@
     template:
       src: "{{ lookup('first_found', zone_statement) }}"
       dest: "{{ confpath }}/{{ domain.name }}.zone.conf"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      owner: "root"
+      group: "{{ bindgroup }}"
       backup: yes
-      mode: 0660
+      mode: 0640
     vars:
       zone_statement:
         files:

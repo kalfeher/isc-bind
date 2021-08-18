@@ -10,6 +10,8 @@
   ServerRole: recursive
   # Directories and files will be set to allow this user read and write access as required
   binduser: named
+  bindgroup: named
+  
   # options are bind-dev, bind (stable version), bind-esv (extended support)
   BindRelease: "bind-dev"
   # Basic default paths. Note that paths based on distribution version are found in vars/main.yml.

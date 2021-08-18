@@ -13,9 +13,9 @@
     copy:
       src: "{{ shared_file_path }}/{{ tsig_name }}.tsig"
       dest: "{{ confpath }}/{{ tsig_name }}.tsig"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: '0660'
+      owner: "root"
+      group: "{{ bindgroup }}"
+      mode: '0640'
       backup: yes
     notify: reconfig isc-bind scl
     when:
@@ -49,9 +49,9 @@
       template:
         src: "{{ lookup('first_found', tsig_source) }}"
         dest: "{{ confpath }}/{{ tsig_name }}.tsig"
-        owner: "{{ binduser }}"
-        group: "{{ binduser }}"
-        mode: 0660
+        owner: "root"
+        group: "{{ bindgroup }}"
+        mode: 0640
       vars:
         tsig_source:
           files:

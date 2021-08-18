@@ -7,7 +7,7 @@
       path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ item.name }}/keys"
       state: directory
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0770
     loop: "{{ pri_domains }}"
 
@@ -23,7 +23,7 @@
       dest: "{{ datapath }}/{{ primary_zone_subdir }}/{{ item.name }}/{{ item.name }}.db"
       force: "{{ 'yes' if item.zonetype == 'static' else 'no' }}"
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0660
     vars:
       zone_files:
@@ -44,9 +44,9 @@
       src: serial.j2
       dest: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain.item.name }}/{{ domain.item.name }}.serial"
       force: yes
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
-      mode: 0660
+      owner: "root"
+      group: "{{ bindgroup }}"
+      mode: 0640
     when: domain.changed == true
     loop: "{{ zone_changes.results}}"
     loop_control:
@@ -58,10 +58,10 @@
     template:
       src: "{{ lookup('first_found', zone_statement) }}"
       dest: "{{ confpath }}/{{ item.name }}.zone.conf"
-      owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      owner: "root"
+      group: "{{ bindgroup }}"
       backup: yes
-      mode: 0660
+      mode: 0640
     vars:
       zone_statement:
         files:

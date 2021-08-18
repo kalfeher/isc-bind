@@ -5,12 +5,12 @@
       path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain }}"
       state: directory
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0770
   - name: Add keys directory for Primary zones
     file:
       path: "{{ datapath }}/{{ primary_zone_subdir }}/{{ domain }}/keys"
       state: directory
       owner: "{{ binduser }}"
-      group: "{{ binduser }}"
+      group: "{{ bindgroup }}"
       mode: 0770
