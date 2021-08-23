@@ -94,7 +94,7 @@
           - "send"
           - "quit"
       echo: yes
-    loop: "{{ns_records}}"
+    loop: "{{ ns_records|default([]) }}"
     loop_control:
       loop_var: RR
       label: "{{ RR.record }}"
@@ -134,7 +134,7 @@
           - "send"
           - "quit"
       echo: yes
-    loop: "{{blocked_ns_records}}"
+    loop: "{{ blocked_ns_records|default([]) }}"
     loop_control:
       loop_var: RR
       label: "{{ RR.record }}"
