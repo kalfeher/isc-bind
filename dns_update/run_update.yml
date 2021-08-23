@@ -3,6 +3,12 @@
     hosts: local # This should run local to a controller
     gather_facts: no
     tasks:
+        - name: Install pexpect python module. Required to support NS record updates.
+          yum:
+            name: python3-pexpect
+            state: present
+          become: yes
+
         - include_vars: "common_dns_vars.yml"
           tags:
             - always
@@ -33,6 +39,13 @@
             file: update_tasks.yml
           tags:
             - template
+            - never
+
+        - name: DNS Update with ns tag
+          include_tasks:
+            file: update_tasks.yml
+          tags:
+            - ns
             - never
             
         - name: DNS update with blocked or delete tag

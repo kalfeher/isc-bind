@@ -82,12 +82,25 @@
       - template
       - never
 
-  - name: Debug delete
-    debug:
-      msg: "{{domain}}"
+  - name: update NS records using nsupdate via expect.
+    expect:
+      command: nsupdate
+      responses:
+        ">":
+          - "key  {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+          - "server {{ primary_host }}"
+          - "zone {{domain}}"
+          - "update add {{RR.record}} {{ RR.ttl|default(default_ttl, true) }} {{ RR.type }} {{RR.value}}"
+          - "send"
+          - "quit"
+      echo: yes
+    loop: "{{ns_records}}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
     tags:
+      - ns
       - never
-      - delete
 
   - name: Update Blocked or delete DNS entries via nsupdate
     nsupdate:
@@ -102,6 +115,26 @@
       value: "{{RR.value|default('')}}"
     become: no
     loop: "{{ blocked_records|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - blocked
+      - delete
+      - always
+  - name: Delete NS records using nsupdate via expect.
+    expect:
+      command: nsupdate
+      responses:
+        ">":
+          - "key  {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+          - "server {{ primary_host }}"
+          - "zone {{domain}}"
+          - "update del {{RR.record}} {{ RR.ttl|default(default_ttl, true) }} {{ RR.type }} {{RR.value}}"
+          - "send"
+          - "quit"
+      echo: yes
+    loop: "{{blocked_ns_records}}"
     loop_control:
       loop_var: RR
       label: "{{ RR.record }}"

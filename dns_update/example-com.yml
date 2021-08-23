@@ -1,5 +1,6 @@
 ---
   domain: "example.com." # Fully qualified
+  primary_host: "{{soa_root_server}}" # If using a hidden primary server, that host should be used as this value instead. 
   # This domain does not send any email.  
   caa_content:
     mailto: "{{contact_email_certs}}" # Can be common to all domains
@@ -11,13 +12,15 @@
     - {type: 'A', record: 'www.{{domain}}', value: '10.1.1.10', ttl: '3600'} 
     - {type: 'AAAA', record: '{{domain}}', value: 'fd01:1:1:1:10', ttl: '3600'}
     - {type: 'A', record: 'manyhosts.{{domain}}', value: ['10.1.1.11', '10.1.1.12'], ttl: '500'} # Example of two A records for a single hostname.
-
+    - {type: 'A', record: 'ns01.{{domain}}', value: '10.1.1.100', ttl: '3600'}
   
   # CNAME entries. Updated when either no tag is used or the 'cname' tag is supplied
   cname_records: 
     - {type: 'CNAME', record: 'myname.{{domain}}', value: 'www.{{domain}}'}
 
-
+  # NS records must be in their own dictionary
+  ns_records:
+    - {type: 'NS', record: 'my_sub_domain.{{domain}}', value: "ns01.{{domain}}" }
   template_records:
     - {type: 'SOA', record: '{{domain}}', value: "{{soa_root_server}} {{ soa_root_email }} {{ ansible_date_time.epoch }} {{ soa_values.refresh }} {{ soa_values.retry }} {{ soa_values.expire }} {{ soa_values.minimum }}" }
     - {type: 'CAA', record: '{{domain}}', value: ['0 iodef "mailto:{{caa_content.mailto}}"','0 issue "letsencrypt.org"']} # Add more issuers as additional list items here..
@@ -31,5 +34,7 @@
   # Add records below to delete or permenently block
   blocked_records:
     - {type: 'A', record: 'home.{{domain}}'}
+  blocked_ns_records:
+    - {type: 'NS', record: 'old_sub_domain.{{domain}}', value: "ns01.{{domain}}" }
 
   default_ttl: "3600"
