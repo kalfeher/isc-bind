@@ -87,7 +87,7 @@
       command: nsupdate
       responses:
         ">":
-          - "key  {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
+          - "key {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}"
           - "server {{ primary_host }}"
           - "zone {{domain}}"
           - "update add {{RR.record}} {{ RR.ttl|default(default_ttl, true) }} {{ RR.type }} {{RR.value}}"
@@ -95,6 +95,33 @@
           - "quit"
       echo: yes
     no_log: True
+    when: 
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "8"    
+    loop: "{{ ns_records|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - ns
+      - never
+  - name: update NS records using nsupdate via heredoc.
+    shell:
+      cmd: |
+        #!/bin/bash
+        UPDATE=$(nsupdate << EOF
+        key {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}
+        server {{ primary_host }}
+        zone {{domain}}
+        update add {{RR.record}} {{ RR.ttl|default(default_ttl, true) }} {{ RR.type }} {{RR.value}}
+        send
+        EOF
+        )
+        ${UPDATE}
+    no_log: True
+    when: 
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"    
     loop: "{{ ns_records|default([]) }}"
     loop_control:
       loop_var: RR
@@ -136,6 +163,34 @@
           - "quit"
       echo: yes
     no_log: True
+    when: 
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "8"
+    loop: "{{ blocked_ns_records|default([]) }}"
+    loop_control:
+      loop_var: RR
+      label: "{{ RR.record }}"
+    tags:
+      - blocked
+      - delete
+      - always
+  - name: delete NS records using nsupdate via heredoc.
+    shell:
+      cmd: |
+        #!/bin/bash
+        UPDATE=$(nsupdate << EOF
+        key {{ dns_update_details[domain.name].tsig_algo|default(dns_update_details['default'].tsig_algo) }}:{{ dns_update_details[domain.name].tsig_name|default(dns_update_details['default'].tsig_name) }} {{ dns_update_details[domain.name].tsig_key|default(dns_update_details['default'].tsig_key) }}
+        server {{ primary_host }}
+        zone {{domain}}
+        update del {{RR.record}} {{ RR.ttl|default(default_ttl, true) }} {{ RR.type }} {{RR.value}}
+        send
+        EOF
+        )
+        ${UPDATE}
+    no_log: True
+    when: 
+      - ansible_os_family == "RedHat"
+      - ansible_distribution_major_version == "7"    
     loop: "{{ blocked_ns_records|default([]) }}"
     loop_control:
       loop_var: RR

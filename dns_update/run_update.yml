@@ -3,12 +3,23 @@
     hosts: local # This should run local to a controller
     gather_facts: no
     tasks:
+        - name: Get limited facts for OS
+          setup:
+            gather_subset:
+              - '!all'
+          tags:
+            - always        
+
         - name: Install pexpect python module. Required to support NS record updates.
           yum:
             name: python3-pexpect
             state: present
           become: yes
-
+          when: 
+            - ansible_os_family == "RedHat"
+            - ansible_distribution_major_version == "8"
+          tags:
+            - always
         - include_vars: "common_dns_vars.yml"
           tags:
             - always
