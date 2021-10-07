@@ -16,7 +16,7 @@
       state: directory
       owner: "root"
       group: "{{ bindgroup }}"
-      mode: '0750'
+      mode: '0770'
 
   - name: Prepare any cron based RPZ feeds
     block:
