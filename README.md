@@ -33,6 +33,46 @@ The default rpz policy also allows you to specify nameserver names and nameserve
 
 RPZ source files should be named _policy_.db.j2. The script will first search for this file within the path specified by `{{ zone_file_path }}` and then the `templates` directory.
 
+#### DNS over TLS (DoT) and DNS over HTTPS (DoH)
+The role provides an opinionated way of configuring DoT and DoH. The configuration is entirely driven by the `recursive-named.conf.j2` template. If you have specified a `{{conf_file_path}}` then you will need to add the required jinja2 elements into your custom template.
+
+Both DoT and DoH require that the variable `isc_bind_tls` exist for the host. Define the variable as follows. You can define multiple TLS entries of any type.
+
+Currently only the Development version (configured in `BindRelease`) of BIND is supported. If you are using the production or extended support versions of BIND then do not configure the `isc_bind_tls` variable.
+
+##### Ephemeral
+The simplest entry is to use the ephemeral key type that BIND will generate for you. The functionality of this key may change between BIND releases so caution is advised.
+```yaml
+isc_bind_tls:
+  - name: 'ephemeral'
+```
+##### Default Static Certificate
+If you wish to use a dedicated certificate but don't wish to use a custom TLS configuration the use the following definition for `isc_bind_tls`:
+```yaml
+isc_bind_tls:
+  - name: 'mycert'
+    cert: '/path/to/cert.pem'
+    key: '/path/to/key.pem'
+    hostname: 'myhost.example.com'
+```
+This configuration will use TLS1.3 exclusively. Since DoT and DoH are very recent technologies, there should be no backwards compatibility issues. Mozilla's modern cipher list is used.
+##### Custom TLS Configuration
+You can import your own custom TLS configuration file (1 file per entry), using the following definition for `isc_bind_tls`:
+```yaml
+isc_bind_tls:
+  - name: 'mycustomTLS'
+    file: '/path/to/tls/file'
+```
+The contents of a custom TLS configuration file must adhere to the BIND `tls` statement grammar.
+##### Using TLS for DoT and DoH
+`tls` entries will be used for several purposes, therefore this role does not assume that each entry is intended to be used for DoT and DoH. In order to use a defined `tls` entry to listen for incoming DoT and DoH connections, add `Listen: True` to the entry:
+```yaml
+isc_bind_tls:
+  - { name: 'ephemeral', Listen: True } # Will be used for DoH and DoT
+  - { name: 'mycert', cert: 'cert.pem', key: 'key.pem', hostname: 'myhost.example.com'} # Will not be used for DoH and DoT
+  - { name: 'mycert2', cert: 'cert2.pem', key: 'key2.pem', hostname: 'myhost2.example.com', Listen: True } # Will be used for DoH and DoTT
+```
+
 ### `ServerRole`: primary
 A primary server (authoritative) that can host either dynamically or statically updated zones. The default is for zones to be locally dynamic and signed.
 Statically managed zones will need a template for the zone file and the zone statement for BIND's configuration file. An example of a statically managed zone (example.com) is included.
