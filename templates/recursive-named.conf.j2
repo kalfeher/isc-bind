@@ -53,7 +53,9 @@ options {
 {% for TLS in isc_bind_tls %}
 {% if TLS.listen %}
 	listen-on port 853 tls {{ TLS.name }} {127.0.0.1; {{ ListenV4 }} };
+	listen-on port 443 tls {{ TLS.name }} http simple {127.0.0.1; {{ ListenV4 }} };
 	listen-on-v6 port 853 tls {{ TLS.name }} { ::1; {{ ListenV6 }} };
+	listen-on-v6 port 443 tls {{ TLS.name }} http simple { ::1; {{ ListenV6 }} };
 
 {% endif %}
 {% endfor %}

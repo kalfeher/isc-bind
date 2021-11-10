@@ -47,7 +47,7 @@ isc_bind_tls:
   - name: 'ephemeral'
 ```
 ##### Default Static Certificate
-If you wish to use a dedicated certificate but don't wish to use a custom TLS configuration the use the following definition for `isc_bind_tls`:
+If you wish to use a dedicated certificate but don't wish to use a custom TLS configuration then use the following definition for `isc_bind_tls`:
 ```yaml
 isc_bind_tls:
   - name: 'mycert'
@@ -70,8 +70,11 @@ The contents of a custom TLS configuration file must adhere to the BIND `tls` st
 isc_bind_tls:
   - { name: 'ephemeral', Listen: True } # Will be used for DoH and DoT
   - { name: 'mycert', cert: 'cert.pem', key: 'key.pem', hostname: 'myhost.example.com'} # Will not be used for DoH and DoT
-  - { name: 'mycert2', cert: 'cert2.pem', key: 'key2.pem', hostname: 'myhost2.example.com', Listen: True } # Will be used for DoH and DoTT
+  - { name: 'mycert2', cert: 'cert2.pem', key: 'key2.pem', hostname: 'myhost2.example.com', Listen: True } # Will be used for DoH and DoT
 ```
+##### SE Linux Changes
+BIND will fail to access http ports under the default selinux rules. This role will update the `named_tcp_bind_http_port` selinux boolean to be `on` if any `isc_bind_tls` entry contains a `listen` parameter set to `True`. If you do not have such an entry, you must change the SE Linux boolean manually.
+
 
 ### `ServerRole`: primary
 A primary server (authoritative) that can host either dynamically or statically updated zones. The default is for zones to be locally dynamic and signed.

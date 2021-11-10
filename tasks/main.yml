@@ -103,6 +103,14 @@
       persistent: yes
     when: ListenStatsV4 != '' or ListenStatsV6 != ''
 
+  - name: SE Linux configuration for DoH
+    seboolean:
+      name: named_tcp_bind_http_port
+      state: yes
+      persistent: yes
+    when: item.listen|default(False)
+    loop: "{{isc_bind_tls}}"
+
   - name: Start BIND
     service:
       name: isc-bind-named
