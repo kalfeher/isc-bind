@@ -12,7 +12,7 @@ include "{{ TLS.file }}";
 tls {{ TLS.name }} {
 	cert-file "{{TLS.cert}}";
 	key-file "{{TLS.key}}";
-	hostname "{{TLS.hostname}}";
+	//hostname "{{TLS.hostname}}"; /* setting removed in recent BIND update*/
 	protocols { TLSv1.3; }; // syntax subject to change. refer to version specific BIND ARM if this fails.
 	
 };
